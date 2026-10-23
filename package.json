@@ -1,0 +1,33 @@
+{
+  "name": "foodbridge",
+  "version": "1.0.0",
+  "description": "Food redistribution and waste-prediction platform connecting hostel messes with nearby NGOs",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -n \"SERVER,CLIENT,ML\" -c \"cyan,green,yellow\" \"npm run server\" \"npm run client\" \"npm run ml\"",
+    "dev:app": "concurrently -n \"SERVER,CLIENT\" -c \"cyan,green\" \"npm run server\" \"npm run client\"",
+    "server": "npm --prefix server run dev",
+    "client": "npm --prefix client run dev",
+    "ml": "cd ml && source venv/bin/activate && uvicorn main:app --port 8000",
+    "seed": "npx --prefix server tsx scripts/generate_dataset.js --scale 100k",
+    "benchmark": "npx --prefix server tsx scripts/run_benchmarks.js",
+    "test": "npm --prefix server test"
+  },
+  "keywords": [
+    "big-data",
+    "mongodb",
+    "food-waste",
+    "logistics",
+    "machine-learning"
+  ],
+  "author": "FoodBridge Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

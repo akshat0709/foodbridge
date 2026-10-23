@@ -1,0 +1,193 @@
+{
+  "info": {
+    "name": "FoodBridge API Collection",
+    "description": "Comprehensive API collection for FoodBridge food redistribution and waste analytics platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5050/api",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login - Platform Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"platform.admin@foodbridge.org\",\n  \"password\": \"Pass1234!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login - Mess Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"mess.admin@foodbridge.org\",\n  \"password\": \"Pass1234!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login - NGO Rep",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ngo.rep@foodbridge.org\",\n  \"password\": \"Pass1234!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Get Current Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listings",
+      "item": [
+        {
+          "name": "List All Surplus",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/listings?limit=25&page=1&status=AVAILABLE", "host": ["{{baseUrl}}"], "path": ["listings"] }
+          }
+        },
+        {
+          "name": "Create Surplus Listing",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"messId\": \"<MESS_ID>\",\n  \"title\": \"Evening Surplus: Basmati Rice & Dal Makhani\",\n  \"foodCategory\": \"COOKED_MEALS\",\n  \"mealType\": \"DINNER\",\n  \"quantityKg\": 28.5,\n  \"portionsEstimate\": 70,\n  \"preparedAt\": \"2026-10-23T19:30:00Z\",\n  \"collectBy\": \"2026-10-23T22:30:00Z\",\n  \"dietaryTags\": [\"VEG\", \"HALAL\"],\n  \"notes\": \"Kept in temperature-controlled hot containers.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/listings", "host": ["{{baseUrl}}"], "path": ["listings"] }
+          }
+        },
+        {
+          "name": "Atomic Claim Listing",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Claimed by Robin Hood Army van #4\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/listings/<LISTING_ID>/claim", "host": ["{{baseUrl}}"], "path": ["listings", "<LISTING_ID>", "claim"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics & Pipeline Inspector",
+      "item": [
+        {
+          "name": "Overview KPIs & Impact",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/analytics/kpis", "host": ["{{baseUrl}}"], "path": ["analytics", "kpis"] }
+          }
+        },
+        {
+          "name": "Waste by Mess Leaderboard",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/analytics/waste-by-mess", "host": ["{{baseUrl}}"], "path": ["analytics", "waste-by-mess"] }
+          }
+        },
+        {
+          "name": "Weekday x Meal Heatmap",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/analytics/heatmap", "host": ["{{baseUrl}}"], "path": ["analytics", "heatmap"] }
+          }
+        },
+        {
+          "name": "Geospatial Hotspots & Unserved Zones",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/analytics/geospatial", "host": ["{{baseUrl}}"], "path": ["analytics", "geospatial"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Forecasting & Benchmarks",
+      "item": [
+        {
+          "name": "Forecast Metrics & Registry",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/forecast/metrics", "host": ["{{baseUrl}}"], "path": ["forecast", "metrics"] }
+          }
+        },
+        {
+          "name": "What-If Simulator",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"attendance\": 620,\n  \"preparedKg\": 72.0,\n  \"mealType\": \"DINNER\",\n  \"foodCategory\": \"RICE_GRAINS\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/forecast/what-if", "host": ["{{baseUrl}}"], "path": ["forecast", "what-if"] }
+          }
+        },
+        {
+          "name": "Run Benchmarks Suite",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scale\": \"100k\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/benchmarks/run", "host": ["{{baseUrl}}"], "path": ["benchmarks", "run"] }
+          }
+        }
+      ]
+    }
+  ]
+}
