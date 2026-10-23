@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import mongoose from 'mongoose';
 import { config } from './config.js';
 import { connectDB } from './db.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -29,6 +30,18 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('combined'));
 }
 
+// Database auto-connection middleware for serverless/Vercel environments
+app.use(async (req, res, next) => {
+  if (mongoose.connection.readyState < 1) {
+    try {
+      await connectDB();
+    } catch (err) {
+      console.error('[Database Middleware] Connection error:', err);
+    }
+  }
+  next();
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({
@@ -36,6 +49,7 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     service: 'FoodBridge Backend API',
     uptime: process.uptime(),
+    dbConnected: mongoose.connection.readyState === 1,
   });
 });
 
@@ -54,11 +68,17 @@ app.use('/api/reports', reportsRouter);
 // Centralized error handler
 app.use(errorHandler);
 
-// Server bootstrap
-if (process.env.NODE_ENV !== 'test') {
-  connectDB().then(() => {
-    app.listen(config.port, () => {
-      console.log(`[FoodBridge Server] Running on http://localhost:${config.port}`);
+// Server bootstrap for local development
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
+  connectDB()
+    .then(() => {
+      app.listen(config.port, () => {
+        console.log(`[FoodBridge Server] Running on http://localhost:${config.port}`);
+      });
+    })
+    .catch(err => {
+      console.error('[Server Bootstrap] Failed to start:', err);
     });
-  });
 }
+
+export default app;

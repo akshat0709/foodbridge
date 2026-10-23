@@ -67,7 +67,7 @@ authRouter.post(
       };
 
       const token = jwt.sign(tokenPayload, config.jwtSecret, {
-        expiresIn: config.jwtExpiresIn,
+        expiresIn: (config.jwtExpiresIn || '7d') as any,
       });
 
       res.json({

@@ -32,7 +32,7 @@ const updateSettingsSchema = z.object({
 // Get global config
 adminRouter.get('/settings', authenticate, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    let setting = await SystemSetting.findOne({ key: 'GLOBAL_CONFIG' }).lean();
+    let setting: any = await SystemSetting.findOne({ key: 'GLOBAL_CONFIG' }).lean();
     if (!setting) {
       setting = await SystemSetting.create({
         key: 'GLOBAL_CONFIG',
