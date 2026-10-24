@@ -153,17 +153,6 @@ export const TopBar: React.FC = () => {
           <LogIn className="w-3.5 h-3.5 text-brand" />
           <span>{user ? 'Switch Account' : 'Log In'}</span>
         </NavLink>
-
-        {/* Built by Akshat Header Badge */}
-        <a
-          href="https://builtbyakshat.vercel.app/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full bg-brand/10 text-brand hover:bg-brand/20 border border-brand/20 transition-colors"
-          title="Visit Creator Website"
-        >
-          Built by Akshat ↗
-        </a>
       </div>
     </header>
   );
