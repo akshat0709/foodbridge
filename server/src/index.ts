@@ -30,6 +30,19 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('combined'));
 }
 
+// Health check endpoint (placed first so it responds instantly in serverless environments)
+const healthHandler = (req: express.Request, res: express.Response) => {
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    service: 'FoodBridge Backend API',
+    uptime: process.uptime(),
+    dbConnected: mongoose.connection.readyState === 1,
+  });
+};
+app.get('/api/health', healthHandler);
+app.get('/health', healthHandler);
+
 // Database auto-connection middleware for serverless/Vercel environments
 app.use(async (req, res, next) => {
   if (mongoose.connection.readyState < 1) {
@@ -42,43 +55,40 @@ app.use(async (req, res, next) => {
   next();
 });
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    service: 'FoodBridge Backend API',
-    uptime: process.uptime(),
-    dbConnected: mongoose.connection.readyState === 1,
-  });
-});
-
-// Mount Routes
+// Mount Routes (support both with and without /api prefix for serverless compatibility)
 app.use('/api/auth', authRouter);
+app.use('/auth', authRouter);
 app.use('/api/listings', listingRouter);
+app.use('/listings', listingRouter);
 app.use('/api/messes', messRouter);
+app.use('/messes', messRouter);
 app.use('/api/ngos', ngoRouter);
+app.use('/ngos', ngoRouter);
 app.use('/api/admin', adminRouter);
+app.use('/admin', adminRouter);
 app.use('/api/analytics', analyticsRouter);
+app.use('/analytics', analyticsRouter);
 app.use('/api/benchmarks', benchmarkRouter);
+app.use('/benchmarks', benchmarkRouter);
 app.use('/api/forecast', forecastRouter);
+app.use('/forecast', forecastRouter);
 app.use('/api/quality', qualityRouter);
+app.use('/quality', qualityRouter);
 app.use('/api/reports', reportsRouter);
+app.use('/reports', reportsRouter);
 
 // Centralized error handler
 app.use(errorHandler);
 
-// Server bootstrap for local development
-if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
-  connectDB()
-    .then(() => {
-      app.listen(config.port, () => {
-        console.log(`[FoodBridge Server] Running on http://localhost:${config.port}`);
-      });
-    })
-    .catch(err => {
-      console.error('[Server Bootstrap] Failed to start:', err);
-    });
-}
+// Fallback for unmatched routes to prevent serverless hanging
+app.use((req: express.Request, res: express.Response) => {
+  res.status(404).json({
+    success: false,
+    error: 'ROUTE_NOT_FOUND',
+    url: req.url,
+    originalUrl: req.originalUrl,
+    method: req.method,
+  });
+});
 
 export default app;

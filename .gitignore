@@ -34,9 +34,7 @@ ml/.env
 !.env.example
 
 # Production build outputs
-dist/
 client/dist/
-server/dist/
 build/
 
 # Editor & OS files

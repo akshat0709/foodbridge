@@ -1,10 +1,10 @@
-import PDFDocument from 'pdfkit';
 import { MealLog } from '../models/MealLog.js';
 import { Listing } from '../models/Listing.js';
 import { Mess } from '../models/Mess.js';
 import { Ngo } from '../models/Ngo.js';
 
 export async function generateMonthlyPDFReport(res: any, monthYear?: string) {
+  const { default: PDFDocument } = await import('pdfkit');
   const doc = new PDFDocument({ margin: 45, size: 'A4' });
 
   doc.pipe(res);

@@ -5,7 +5,7 @@ export const config = {
   env: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT || '5050', 10),
   mongodbUri: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/foodbridge',
-  jwtSecret: process.env.JWT_SECRET || 'foodbridge_default_jwt_secret_dev_key',
+  jwtSecret: process.env.JWT_SECRET || 'foodbridge_super_secure_jwt_secret_key_change_in_production_2026',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   mlServiceUrl: process.env.ML_SERVICE_URL || 'http://127.0.0.1:8000',
   corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:5173',
