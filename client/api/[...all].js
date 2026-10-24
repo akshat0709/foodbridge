@@ -7,7 +7,6 @@ import mongoose15 from "mongoose";
 
 // server/src/db.ts
 import mongoose8 from "mongoose";
-import dns from "dns";
 
 // server/src/config.ts
 import dotenv from "dotenv";
@@ -588,10 +587,6 @@ async function autoBootstrapIfEmpty() {
 }
 
 // server/src/db.ts
-try {
-  dns.setServers(["8.8.8.8", "1.1.1.1"]);
-} catch (_) {
-}
 var isConnecting = false;
 async function connectDB(uri) {
   if (mongoose8.connection.readyState >= 1) {

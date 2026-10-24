@@ -1,11 +1,6 @@
 import mongoose from 'mongoose';
-import dns from 'dns';
 import { config } from './config.js';
 import { autoBootstrapIfEmpty } from './services/bootstrapService.js';
-
-try {
-  dns.setServers(['8.8.8.8', '1.1.1.1']);
-} catch (_) {}
 
 let isConnecting = false;
 
