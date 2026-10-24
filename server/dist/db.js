@@ -13,11 +13,12 @@ export async function connectDB(uri) {
     const targetUri = uri || config.mongodbUri;
     try {
         await mongoose.connect(targetUri, {
-            serverSelectionTimeoutMS: 4000,
-            connectTimeoutMS: 4000,
+            serverSelectionTimeoutMS: 5000,
+            connectTimeoutMS: 5000,
             socketTimeoutMS: 8000,
             maxPoolSize: 5,
             autoIndex: false,
+            bufferCommands: false,
         });
         console.log(`[Database] MongoDB connected successfully to ${targetUri.replace(/:[^:]*@/, ':****@')}`);
         // Non-blocking background auto-seed

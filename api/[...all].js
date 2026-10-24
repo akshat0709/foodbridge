@@ -599,11 +599,12 @@ async function connectDB(uri) {
   const targetUri = uri || config.mongodbUri;
   try {
     await mongoose8.connect(targetUri, {
-      serverSelectionTimeoutMS: 4e3,
-      connectTimeoutMS: 4e3,
+      serverSelectionTimeoutMS: 5e3,
+      connectTimeoutMS: 5e3,
       socketTimeoutMS: 8e3,
       maxPoolSize: 5,
-      autoIndex: false
+      autoIndex: false,
+      bufferCommands: false
     });
     console.log(`[Database] MongoDB connected successfully to ${targetUri.replace(/:[^:]*@/, ":****@")}`);
     autoBootstrapIfEmpty().catch((err) => console.error("[Bootstrap Background Error]:", err));
@@ -3378,12 +3379,24 @@ var healthHandler = (req, res) => {
 app.get("/api/health", healthHandler);
 app.get("/health", healthHandler);
 app.use(async (req, res, next) => {
+  if (req.path === "/api/health" || req.path === "/health") {
+    return next();
+  }
   if (mongoose15.connection.readyState < 1) {
     try {
       await connectDB();
     } catch (err) {
       console.error("[Database Middleware] Connection error:", err);
     }
+  }
+  if (mongoose15.connection.readyState < 1) {
+    return res.status(503).json({
+      success: false,
+      error: {
+        code: "DATABASE_DISCONNECTED",
+        message: "Could not connect to MongoDB database. Please ensure MONGODB_URI is set in Vercel Environment Variables and MongoDB Atlas allows 0.0.0.0/0 in Network Access."
+      }
+    });
   }
   next();
 });

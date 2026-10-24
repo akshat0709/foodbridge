@@ -45,12 +45,24 @@ app.get('/health', healthHandler);
 
 // Database auto-connection middleware for serverless/Vercel environments
 app.use(async (req, res, next) => {
+  if (req.path === '/api/health' || req.path === '/health') {
+    return next();
+  }
   if (mongoose.connection.readyState < 1) {
     try {
       await connectDB();
     } catch (err) {
       console.error('[Database Middleware] Connection error:', err);
     }
+  }
+  if (mongoose.connection.readyState < 1) {
+    return res.status(503).json({
+      success: false,
+      error: {
+        code: 'DATABASE_DISCONNECTED',
+        message: 'Could not connect to MongoDB database. Please ensure MONGODB_URI is set in Vercel Environment Variables and MongoDB Atlas allows 0.0.0.0/0 in Network Access.',
+      },
+    });
   }
   next();
 });
