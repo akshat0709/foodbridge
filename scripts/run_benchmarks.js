@@ -2,7 +2,12 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { runBenchmarkSuite } from '../server/src/services/benchmarkService.js';
 
-dotenv.config({ path: '../server/.env' });
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, '../server/.env') });
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/foodbridge';
 
 async function main() {
