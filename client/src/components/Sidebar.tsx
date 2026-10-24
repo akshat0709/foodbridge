@@ -166,21 +166,43 @@ export const Sidebar: React.FC = () => {
           </div>
           <div className="truncate">
             <span className="block font-medium text-text-primary-light dark:text-text-primary-dark truncate">
-              {user?.name || 'Operator'}
+              {user?.name || 'Guest Operator'}
             </span>
             <span className="block text-[10px] font-mono text-text-muted-light dark:text-text-muted-dark">
-              {role}
+              {user ? role : 'Not signed in'}
             </span>
           </div>
         </div>
 
-        <button
-          onClick={logout}
-          className="p-1.5 rounded hover:bg-surface-hover-light dark:hover:bg-surface-hover-dark text-text-muted-light dark:text-text-muted-dark hover:text-danger"
-          title="Sign out"
+        {user ? (
+          <button
+            onClick={logout}
+            className="p-1.5 rounded hover:bg-surface-hover-light dark:hover:bg-surface-hover-dark text-text-muted-light dark:text-text-muted-dark hover:text-danger"
+            title="Sign out"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+          </button>
+        ) : (
+          <NavLink
+            to="/login"
+            className="px-2.5 py-1 rounded bg-brand text-white font-semibold text-[11px] hover:bg-brand/90 transition-colors shadow-2xs"
+          >
+            Log In
+          </NavLink>
+        )}
+      </div>
+
+      {/* Attribution Footer */}
+      <div className="px-3 py-2 border-t border-border-light dark:border-border-dark flex items-center justify-between text-[11px] text-text-muted-light dark:text-text-muted-dark bg-bg-light/40 dark:bg-bg-dark/40">
+        <span>Built by</span>
+        <a
+          href="https://builtbyakshat.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-brand hover:underline inline-flex items-center gap-0.5"
         >
-          <LogOut className="w-3.5 h-3.5" />
-        </button>
+          Akshat <span className="text-[9px]">↗</span>
+        </a>
       </div>
     </aside>
   );

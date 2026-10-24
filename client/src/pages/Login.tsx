@@ -135,6 +135,19 @@ export const Login: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* Creator Attribution */}
+        <div className="text-center text-xs text-text-muted-light dark:text-text-muted-dark pt-1">
+          <span>Crafted with care &bull; </span>
+          <a
+            href="https://builtbyakshat.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand font-semibold hover:underline inline-flex items-center gap-0.5"
+          >
+            Built by Akshat ↗
+          </a>
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useFilters } from '../context/FilterContext';
 import { apiRequest } from '../api/client';
@@ -10,6 +11,7 @@ import {
   UserCheck,
   RefreshCw,
   SlidersHorizontal,
+  LogIn,
 } from 'lucide-react';
 
 export const TopBar: React.FC = () => {
@@ -141,6 +143,27 @@ export const TopBar: React.FC = () => {
         >
           {darkMode ? <Sun className="w-4 h-4 text-warning" /> : <Moon className="w-4 h-4" />}
         </button>
+
+        {/* Direct Login / Switch Account Link */}
+        <NavLink
+          to="/login"
+          className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded border border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark hover:bg-surface-hover-light dark:hover:bg-surface-hover-dark text-text-primary-light dark:text-text-primary-dark transition-colors"
+          title="Open login portal"
+        >
+          <LogIn className="w-3.5 h-3.5 text-brand" />
+          <span>{user ? 'Switch Account' : 'Log In'}</span>
+        </NavLink>
+
+        {/* Built by Akshat Header Badge */}
+        <a
+          href="https://builtbyakshat.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full bg-brand/10 text-brand hover:bg-brand/20 border border-brand/20 transition-colors"
+          title="Visit Creator Website"
+        >
+          Built by Akshat ↗
+        </a>
       </div>
     </header>
   );
