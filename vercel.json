@@ -15,11 +15,24 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": { "service": "server" }
+      "destination": {
+        "service": "server",
+        "path": "/api/$1"
+      }
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": {
+        "service": "client",
+        "path": "/assets/$1"
+      }
     },
     {
       "source": "/(.*)",
-      "destination": { "service": "client" }
+      "destination": {
+        "service": "client",
+        "path": "/index.html"
+      }
     }
   ]
 }
