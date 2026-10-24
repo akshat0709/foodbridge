@@ -8,6 +8,7 @@
     "server": {
       "root": "server/",
       "framework": "express",
+      "entrypoint": "src/index.ts",
       "bindings": [
         {
           "type": "service",
