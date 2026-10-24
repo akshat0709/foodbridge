@@ -28,6 +28,24 @@ import { Benchmarks } from './pages/admin/Benchmarks';
 import { UserSettings } from './pages/admin/UserSettings';
 import { Reports } from './pages/admin/Reports';
 
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center bg-bg-light dark:bg-bg-dark text-text-muted-light font-mono text-xs">
+        Authenticating session...
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
+};
+
 const AppRoutes: React.FC = () => {
   const { user, isLoading } = useAuth();
 
@@ -41,9 +59,15 @@ const AppRoutes: React.FC = () => {
 
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
 
-      <Route element={<Layout />}>
+      <Route
+        element={
+          <ProtectedRoute>
+            <Layout />
+          </ProtectedRoute>
+        }
+      >
         {/* Default route redirect based on role */}
         <Route
           path="/"

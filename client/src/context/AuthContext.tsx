@@ -56,8 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         })
         .finally(() => setIsLoading(false));
     } else {
-      // Auto-login as platform admin initially for seamless evaluation
-      switchDemoRole('PLATFORM_ADMIN').finally(() => setIsLoading(false));
+      setIsLoading(false);
     }
   }, []);
 
