@@ -26,7 +26,7 @@ const updateSettingsSchema = z.object({
     driftThresholdMae: z.number().positive().optional(),
 });
 // Get global config
-adminRouter.get('/settings', authenticate, async (req, res, next) => {
+adminRouter.get('/settings', authenticate, authorize(['PLATFORM_ADMIN']), async (req, res, next) => {
     try {
         let setting = await SystemSetting.findOne({ key: 'GLOBAL_CONFIG' }).lean();
         if (!setting) {
@@ -63,7 +63,7 @@ adminRouter.put('/settings', authenticate, authorize(['PLATFORM_ADMIN']), valida
     }
 });
 // Anomalies Feed
-adminRouter.get('/anomalies', authenticate, async (req, res, next) => {
+adminRouter.get('/anomalies', authenticate, authorize(['PLATFORM_ADMIN']), async (req, res, next) => {
     try {
         const { limit = '50', page = '1' } = req.query;
         const pageNum = Math.max(1, parseInt(page, 10));
@@ -158,7 +158,7 @@ adminRouter.post('/archive', authenticate, authorize(['PLATFORM_ADMIN']), async 
     }
 });
 // Lifecycle Status (TTL & summary storage)
-adminRouter.get('/lifecycle-status', authenticate, async (req, res, next) => {
+adminRouter.get('/lifecycle-status', authenticate, authorize(['PLATFORM_ADMIN']), async (req, res, next) => {
     try {
         const [rawAuditLogsCount, archivedRollupsCount, totalMealLogsCount] = await Promise.all([
             AuditLog.countDocuments(),

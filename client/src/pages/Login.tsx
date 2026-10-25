@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth, ROLE_HOME } from '../context/AuthContext';
 import { ShieldCheck, UserCheck, AlertCircle, ArrowRight } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const { login, switchDemoRole } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = (location.state as any)?.from as string | undefined;
 
   const [email, setEmail] = useState('platform.admin@foodbridge.org');
   const [password, setPassword] = useState('Pass1234!');
@@ -17,8 +19,8 @@ export const Login: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-      await login(email, password);
-      navigate('/');
+      const u = await login(email, password);
+      navigate(redirectTo && redirectTo !== '/login' ? redirectTo : ROLE_HOME[u.role], { replace: true });
     } catch (err: any) {
       setError(err.message || 'Invalid credentials');
     } finally {
@@ -28,11 +30,10 @@ export const Login: React.FC = () => {
 
   const handleQuickDemo = async (role: 'MESS_ADMIN' | 'NGO_REP' | 'PLATFORM_ADMIN') => {
     setIsLoading(true);
+    setError(null);
     try {
-      await switchDemoRole(role);
-      if (role === 'MESS_ADMIN') navigate('/mess/report');
-      else if (role === 'NGO_REP') navigate('/ngo/donations');
-      else navigate('/admin/overview');
+      const u = await switchDemoRole(role);
+      navigate(ROLE_HOME[u.role], { replace: true });
     } catch (err: any) {
       setError(err.message || 'Demo login failed');
     } finally {

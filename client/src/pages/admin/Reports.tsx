@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { exportCsv } from '../../api/client';
+import { exportCsv, downloadFile } from '../../api/client';
 import { FileText, Download, Calendar, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export const Reports: React.FC = () => {
@@ -8,19 +8,13 @@ export const Reports: React.FC = () => {
 
   const handleDownloadPDF = () => {
     setIsGenerating(true);
-    const token = localStorage.getItem('foodbridge_token');
-    fetch(`/api/reports/monthly-pdf?monthYear=${encodeURIComponent(selectedMonth)}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    })
-      .then(res => res.blob())
-      .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `FoodBridge_Monthly_Operations_Report_${selectedMonth.replace(' ', '_')}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+    downloadFile(
+      `/api/reports/monthly-pdf?monthYear=${encodeURIComponent(selectedMonth)}`,
+      `FoodBridge_Monthly_Operations_Report_${selectedMonth.replace(' ', '_')}.pdf`
+    )
+      .catch(err => {
+        console.error('[Reports] PDF download failed:', err);
+        window.alert(`Report download failed: ${err.message}`);
       })
       .finally(() => setIsGenerating(false));
   };

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { config } from '../config.js';
+import { getJwtSecret } from '../config.js';
 import { AppError } from './errorHandler.js';
 import { UserRole } from '../models/User.js';
 
@@ -20,31 +20,33 @@ declare global {
   }
 }
 
+/** Requires a valid Bearer token. Missing, malformed, expired or forged tokens get 401. */
 export function authenticate(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    req.user = {
-      userId: '6adcd57184b8ffbca383bf2e',
-      email: 'platform.admin@foodbridge.org',
-      role: 'PLATFORM_ADMIN',
-      name: 'Aditi Rao (Platform Admin)',
-    };
-    return next();
+    return next(new AppError('Authentication required. Please log in.', 401, 'UNAUTHORIZED'));
   }
 
-  const token = authHeader.split(' ')[1];
+  const token = authHeader.slice('Bearer '.length).trim();
+  let secret: string;
   try {
-    const decoded = jwt.verify(token, config.jwtSecret) as AuthUserPayload;
+    secret = getJwtSecret();
+  } catch (err) {
+    return next(err);
+  }
+
+  try {
+    const decoded = jwt.verify(token, secret, { algorithms: ['HS256'] }) as AuthUserPayload;
+    if (!decoded?.userId || !decoded?.role) {
+      return next(new AppError('Invalid authentication token.', 401, 'INVALID_TOKEN'));
+    }
     req.user = decoded;
     next();
   } catch (err: any) {
-    req.user = {
-      userId: '6adcd57184b8ffbca383bf2e',
-      email: 'platform.admin@foodbridge.org',
-      role: 'PLATFORM_ADMIN',
-      name: 'Aditi Rao (Platform Admin)',
-    };
-    next();
+    if (err.name === 'TokenExpiredError') {
+      return next(new AppError('Your session has expired. Please log in again.', 401, 'TOKEN_EXPIRED'));
+    }
+    return next(new AppError('Invalid authentication token.', 401, 'INVALID_TOKEN'));
   }
 }
 
@@ -64,5 +66,32 @@ export function authorize(allowedRoles: UserRole[]) {
       );
     }
     next();
+  };
+}
+
+/**
+ * Ownership check for mess/NGO-scoped resources: platform admins may act on any
+ * organization; mess admins and NGO reps only on the organization linked to
+ * their account. Throws 403 otherwise.
+ */
+export function assertOrgAccess(user: AuthUserPayload | undefined, orgId: string | undefined | null) {
+  if (!user) {
+    throw new AppError('Unauthorized. No user identity.', 401, 'UNAUTHORIZED');
+  }
+  if (user.role === 'PLATFORM_ADMIN') return;
+  if (!orgId || !user.organizationId || String(orgId) !== String(user.organizationId)) {
+    throw new AppError('Forbidden: you can only access your own organization.', 403, 'FORBIDDEN');
+  }
+}
+
+/** Middleware form of assertOrgAccess for routes with the organization id in :id. */
+export function requireOrgAccessParam(param = 'id') {
+  return (req: Request, res: Response, next: NextFunction) => {
+    try {
+      assertOrgAccess(req.user, req.params[param]);
+      next();
+    } catch (err) {
+      next(err);
+    }
   };
 }

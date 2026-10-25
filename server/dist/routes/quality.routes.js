@@ -3,7 +3,7 @@ import { runDataQualityScan, processBulkImport } from '../services/dataQualitySe
 import { authenticate, authorize } from '../middleware/auth.js';
 export const qualityRouter = Router();
 // Run or view data quality audit
-qualityRouter.get('/', authenticate, async (req, res, next) => {
+qualityRouter.get('/', authenticate, authorize(['PLATFORM_ADMIN']), async (req, res, next) => {
     try {
         const result = await runDataQualityScan();
         res.json({ success: true, data: result });
@@ -20,6 +20,16 @@ qualityRouter.post('/bulk-import', authenticate, authorize(['PLATFORM_ADMIN', 'M
             return res
                 .status(400)
                 .json({ success: false, error: { message: 'Payload must contain a "rows" array.' } });
+        }
+        // Mess admins may only import rows for their own mess.
+        if (req.user.role === 'MESS_ADMIN') {
+            const foreign = rows.find((r) => String(r?.messId) !== String(req.user.organizationId));
+            if (foreign || !req.user.organizationId) {
+                return res.status(403).json({
+                    success: false,
+                    error: { code: 'FORBIDDEN', message: 'You can only import meal logs for your own mess.' },
+                });
+            }
         }
         const report = await processBulkImport(rows);
         res.json({

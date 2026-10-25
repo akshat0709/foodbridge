@@ -1,5 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, authorize } from '../middleware/auth.js';
+import { AppError } from '../middleware/errorHandler.js';
 import {
   getOverviewImpactKPIs,
   getDonatedVsRedistributedTrends,
@@ -16,7 +17,7 @@ import { MealLog } from '../models/MealLog.js';
 export const analyticsRouter = Router();
 
 function extractFilters(req: Request): PipelineFilter {
-  return {
+  const filters: PipelineFilter = {
     startDate: req.query.startDate as string,
     endDate: req.query.endDate as string,
     messId: req.query.messId as string,
@@ -24,10 +25,18 @@ function extractFilters(req: Request): PipelineFilter {
     mealType: req.query.mealType as string,
     foodCategory: req.query.foodCategory as string,
   };
+  // Mess admins only ever see their own mess's numbers, whatever the query says.
+  if (req.user?.role === 'MESS_ADMIN') {
+    filters.messId = req.user.organizationId || '000000000000000000000000';
+  }
+  return filters;
 }
 
+const adminOnly = authorize(['PLATFORM_ADMIN']);
+const messOrAdmin = authorize(['MESS_ADMIN', 'PLATFORM_ADMIN']);
+
 // 1. Overview KPIs
-analyticsRouter.get('/kpis', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+analyticsRouter.get('/kpis', authenticate, adminOnly, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const filters = extractFilters(req);
     const result = await getOverviewImpactKPIs(filters);
@@ -38,7 +47,7 @@ analyticsRouter.get('/kpis', authenticate, async (req: Request, res: Response, n
 });
 
 // 2. Trends (Donated vs Redistributed)
-analyticsRouter.get('/trends', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+analyticsRouter.get('/trends', authenticate, adminOnly, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const filters = extractFilters(req);
     const result = await getDonatedVsRedistributedTrends(filters);
@@ -49,7 +58,7 @@ analyticsRouter.get('/trends', authenticate, async (req: Request, res: Response,
 });
 
 // 3. Waste by Mess
-analyticsRouter.get('/waste-by-mess', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+analyticsRouter.get('/waste-by-mess', authenticate, adminOnly, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const filters = extractFilters(req);
     const result = await getWastePerMess(filters);
@@ -60,7 +69,7 @@ analyticsRouter.get('/waste-by-mess', authenticate, async (req: Request, res: Re
 });
 
 // 4. Heatmap
-analyticsRouter.get('/heatmap', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+analyticsRouter.get('/heatmap', authenticate, messOrAdmin, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const filters = extractFilters(req);
     const result = await getWeekdayMealTypeHeatmap(filters);
@@ -71,7 +80,7 @@ analyticsRouter.get('/heatmap', authenticate, async (req: Request, res: Response
 });
 
 // 5. Pareto Chart
-analyticsRouter.get('/pareto', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+analyticsRouter.get('/pareto', authenticate, messOrAdmin, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const filters = extractFilters(req);
     const result = await getCategoryParetoChart(filters);
@@ -82,7 +91,7 @@ analyticsRouter.get('/pareto', authenticate, async (req: Request, res: Response,
 });
 
 // 6. NGO Performance
-analyticsRouter.get('/ngo-performance', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+analyticsRouter.get('/ngo-performance', authenticate, adminOnly, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const filters = extractFilters(req);
     const result = await getNgoPerformanceMetrics(filters);
@@ -93,7 +102,7 @@ analyticsRouter.get('/ngo-performance', authenticate, async (req: Request, res: 
 });
 
 // 7. Growth / MoM
-analyticsRouter.get('/growth', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+analyticsRouter.get('/growth', authenticate, adminOnly, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const filters = extractFilters(req);
     const result = await getGrowthMetrics(filters);
@@ -104,7 +113,7 @@ analyticsRouter.get('/growth', authenticate, async (req: Request, res: Response,
 });
 
 // 8. Geospatial Hotspots & Unserved Zones
-analyticsRouter.get('/geospatial', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+analyticsRouter.get('/geospatial', authenticate, adminOnly, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await getGeospatialAnalytics();
     res.json({ success: true, data: result });
@@ -114,11 +123,18 @@ analyticsRouter.get('/geospatial', authenticate, async (req: Request, res: Respo
 });
 
 // 9. Pipeline Inspector On-Demand Explain
-analyticsRouter.post('/explain', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+analyticsRouter.post('/explain', authenticate, adminOnly, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { pipeline } = req.body;
     if (!pipeline || !Array.isArray(pipeline)) {
       return res.status(400).json({ success: false, error: { message: 'Invalid pipeline array' } });
+    }
+    // Explain is read-only inspection; refuse stages that write or read other collections.
+    const forbidden = ['$out', '$merge', '$lookup', '$unionWith', '$graphLookup'];
+    const used = pipeline.flatMap((stage: any) => (stage && typeof stage === 'object' ? Object.keys(stage) : []));
+    const bad = used.find((k: string) => forbidden.includes(k));
+    if (bad) {
+      return next(new AppError(`Stage ${bad} is not allowed in explain`, 400, 'STAGE_NOT_ALLOWED'));
     }
 
     const startTime = Date.now();

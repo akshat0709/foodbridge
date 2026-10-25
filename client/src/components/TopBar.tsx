@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth, ROLE_HOME, UserRole } from '../context/AuthContext';
 import { useFilters } from '../context/FilterContext';
 import { apiRequest } from '../api/client';
 import {
@@ -16,6 +16,18 @@ import {
 
 export const TopBar: React.FC = () => {
   const { user, switchDemoRole, darkMode, toggleDarkMode } = useAuth();
+  const navigate = useNavigate();
+
+  // Signs in as the selected demo account (real login) and opens that role's home page.
+  const handleSwitchRole = async (role: UserRole) => {
+    if (user?.role === role) return;
+    try {
+      const u = await switchDemoRole(role);
+      navigate(ROLE_HOME[u.role]);
+    } catch (err: any) {
+      window.alert(`Could not switch role: ${err.message}`);
+    }
+  };
   const { filters, setFilter, resetFilters } = useFilters();
   const [messes, setMesses] = useState<any[]>([]);
   const [ngos, setNgos] = useState<any[]>([]);
@@ -104,7 +116,7 @@ export const TopBar: React.FC = () => {
             <UserCheck className="w-3 h-3 text-brand" /> Role:
           </span>
           <button
-            onClick={() => switchDemoRole('MESS_ADMIN')}
+            onClick={() => handleSwitchRole('MESS_ADMIN')}
             className={`px-2 py-0.5 rounded-xs transition-colors ${
               user?.role === 'MESS_ADMIN'
                 ? 'bg-surface-light dark:bg-surface-dark shadow-2xs font-semibold text-text-primary-light dark:text-text-primary-dark border border-border-light dark:border-border-dark'
@@ -114,7 +126,7 @@ export const TopBar: React.FC = () => {
             Mess
           </button>
           <button
-            onClick={() => switchDemoRole('NGO_REP')}
+            onClick={() => handleSwitchRole('NGO_REP')}
             className={`px-2 py-0.5 rounded-xs transition-colors ${
               user?.role === 'NGO_REP'
                 ? 'bg-surface-light dark:bg-surface-dark shadow-2xs font-semibold text-text-primary-light dark:text-text-primary-dark border border-border-light dark:border-border-dark'
@@ -124,7 +136,7 @@ export const TopBar: React.FC = () => {
             NGO
           </button>
           <button
-            onClick={() => switchDemoRole('PLATFORM_ADMIN')}
+            onClick={() => handleSwitchRole('PLATFORM_ADMIN')}
             className={`px-2 py-0.5 rounded-xs transition-colors ${
               user?.role === 'PLATFORM_ADMIN'
                 ? 'bg-surface-light dark:bg-surface-dark shadow-2xs font-semibold text-text-primary-light dark:text-text-primary-dark border border-border-light dark:border-border-dark'

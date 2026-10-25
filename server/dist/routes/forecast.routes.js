@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { config } from '../config.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, authorize } from '../middleware/auth.js';
 import { ModelRegistry } from '../models/ModelRegistry.js';
 import { MealLog } from '../models/MealLog.js';
 export const forecastRouter = Router();
@@ -9,6 +9,8 @@ async function callMLService(endpoint, options = {}) {
     const url = `${config.mlServiceUrl}${endpoint}`;
     try {
         const res = await fetch(url, {
+            // Don't let an unreachable ML host stall the request (serverless timeouts).
+            signal: AbortSignal.timeout(4000),
             ...options,
             headers: {
                 'Content-Type': 'application/json',
@@ -58,7 +60,7 @@ const FALLBACK_METRICS = {
     baselineMae: 1.64,
 };
 // GET /api/forecast/metrics
-forecastRouter.get('/metrics', authenticate, async (req, res, next) => {
+forecastRouter.get('/metrics', authenticate, authorize(['PLATFORM_ADMIN']), async (req, res, next) => {
     try {
         const mlResponse = await callMLService('/metrics');
         if (mlResponse) {
@@ -71,7 +73,7 @@ forecastRouter.get('/metrics', authenticate, async (req, res, next) => {
     }
 });
 // POST /api/forecast/predict
-forecastRouter.post('/predict', authenticate, async (req, res, next) => {
+forecastRouter.post('/predict', authenticate, authorize(['MESS_ADMIN', 'PLATFORM_ADMIN']), async (req, res, next) => {
     try {
         const mlResponse = await callMLService('/predict', {
             method: 'POST',
@@ -103,7 +105,7 @@ forecastRouter.post('/predict', authenticate, async (req, res, next) => {
     }
 });
 // POST /api/forecast/what-if
-forecastRouter.post('/what-if', authenticate, async (req, res, next) => {
+forecastRouter.post('/what-if', authenticate, authorize(['MESS_ADMIN', 'PLATFORM_ADMIN']), async (req, res, next) => {
     try {
         const mlResponse = await callMLService('/what-if', {
             method: 'POST',
@@ -132,7 +134,7 @@ forecastRouter.post('/what-if', authenticate, async (req, res, next) => {
     }
 });
 // GET /api/forecast/drift
-forecastRouter.get('/drift', authenticate, async (req, res, next) => {
+forecastRouter.get('/drift', authenticate, authorize(['PLATFORM_ADMIN']), async (req, res, next) => {
     try {
         const mlResponse = await callMLService('/drift');
         if (mlResponse) {
@@ -157,7 +159,7 @@ forecastRouter.get('/drift', authenticate, async (req, res, next) => {
     }
 });
 // POST /api/forecast/retrain
-forecastRouter.post('/retrain', authenticate, async (req, res, next) => {
+forecastRouter.post('/retrain', authenticate, authorize(['PLATFORM_ADMIN']), async (req, res, next) => {
     try {
         // Sample recent meal logs from MongoDB for real retraining
         const recentLogs = await MealLog.find({ leftoverKg: { $gte: 0 } })
@@ -219,7 +221,7 @@ forecastRouter.post('/retrain', authenticate, async (req, res, next) => {
     }
 });
 // GET /api/forecast/model-registry
-forecastRouter.get('/model-registry', authenticate, async (req, res, next) => {
+forecastRouter.get('/model-registry', authenticate, authorize(['PLATFORM_ADMIN']), async (req, res, next) => {
     try {
         let registry = await ModelRegistry.find({}).sort({ trainedAt: -1 }).lean();
         if (registry.length === 0) {

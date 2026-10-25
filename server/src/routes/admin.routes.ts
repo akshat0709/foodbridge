@@ -30,7 +30,7 @@ const updateSettingsSchema = z.object({
 });
 
 // Get global config
-adminRouter.get('/settings', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+adminRouter.get('/settings', authenticate, authorize(['PLATFORM_ADMIN']), async (req: Request, res: Response, next: NextFunction) => {
   try {
     let setting: any = await SystemSetting.findOne({ key: 'GLOBAL_CONFIG' }).lean();
     if (!setting) {
@@ -77,7 +77,7 @@ adminRouter.put(
 );
 
 // Anomalies Feed
-adminRouter.get('/anomalies', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+adminRouter.get('/anomalies', authenticate, authorize(['PLATFORM_ADMIN']), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { limit = '50', page = '1' } = req.query;
     const pageNum = Math.max(1, parseInt(page as string, 10));
@@ -179,7 +179,7 @@ adminRouter.post('/archive', authenticate, authorize(['PLATFORM_ADMIN']), async 
 });
 
 // Lifecycle Status (TTL & summary storage)
-adminRouter.get('/lifecycle-status', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+adminRouter.get('/lifecycle-status', authenticate, authorize(['PLATFORM_ADMIN']), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const [rawAuditLogsCount, archivedRollupsCount, totalMealLogsCount] = await Promise.all([
       AuditLog.countDocuments(),

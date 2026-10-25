@@ -6,7 +6,7 @@ import { rateLimit } from 'express-rate-limit';
 import { User } from '../models/User.js';
 import { Mess } from '../models/Mess.js';
 import { Ngo } from '../models/Ngo.js';
-import { config } from '../config.js';
+import { config, getJwtSecret } from '../config.js';
 import { validate } from '../middleware/validate.js';
 import { authenticate } from '../middleware/auth.js';
 import { AppError } from '../middleware/errorHandler.js';
@@ -55,7 +55,8 @@ authRouter.post('/login', authLimiter, validate(loginSchema), async (req, res, n
             name: user.name,
             organizationId: user.organizationId?.toString(),
         };
-        const token = jwt.sign(tokenPayload, config.jwtSecret, {
+        const token = jwt.sign(tokenPayload, getJwtSecret(), {
+            algorithm: 'HS256',
             expiresIn: (config.jwtExpiresIn || '7d'),
         });
         res.json({

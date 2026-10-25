@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { Mess } from '../models/Mess.js';
 import { MealLog } from '../models/MealLog.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, authorize, requireOrgAccessParam } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 import { AppError } from '../middleware/errorHandler.js';
 export const messRouter = Router();
@@ -40,7 +40,7 @@ messRouter.get('/:id', authenticate, async (req, res, next) => {
         next(err);
     }
 });
-messRouter.post('/:id/meal-logs', authenticate, validate(createMealLogSchema), async (req, res, next) => {
+messRouter.post('/:id/meal-logs', authenticate, authorize(['MESS_ADMIN', 'PLATFORM_ADMIN']), requireOrgAccessParam('id'), validate(createMealLogSchema), async (req, res, next) => {
     try {
         const messId = req.params.id;
         const mess = await Mess.findById(messId);
@@ -98,10 +98,12 @@ messRouter.post('/:id/meal-logs', authenticate, validate(createMealLogSchema), a
         next(err);
     }
 });
-messRouter.get('/:id/meal-logs', authenticate, async (req, res, next) => {
+messRouter.get('/:id/meal-logs', authenticate, authorize(['MESS_ADMIN', 'PLATFORM_ADMIN']), requireOrgAccessParam('id'), async (req, res, next) => {
     try {
         const { limit = '30', page = '1', mealType, foodCategory, startDate, endDate } = req.query;
-        const filter = { messId: req.params.id };
+        // /messes/all/meal-logs = every mess (platform admins only; requireOrgAccessParam
+        // rejects 'all' for anyone else because it isn't their organization id).
+        const filter = req.params.id === 'all' ? {} : { messId: req.params.id };
         if (mealType && mealType !== 'ALL')
             filter.mealType = mealType;
         if (foodCategory && foodCategory !== 'ALL')

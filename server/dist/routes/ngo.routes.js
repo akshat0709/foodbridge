@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { Ngo } from '../models/Ngo.js';
 import { Listing } from '../models/Listing.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, authorize, requireOrgAccessParam } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 import { AppError } from '../middleware/errorHandler.js';
 export const ngoRouter = Router();
@@ -50,7 +50,7 @@ ngoRouter.get('/:id', authenticate, async (req, res, next) => {
         next(err);
     }
 });
-ngoRouter.put('/:id/settings', authenticate, validate(updateSettingsSchema), async (req, res, next) => {
+ngoRouter.put('/:id/settings', authenticate, authorize(['NGO_REP', 'PLATFORM_ADMIN']), requireOrgAccessParam('id'), validate(updateSettingsSchema), async (req, res, next) => {
     try {
         const ngo = await Ngo.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
         if (!ngo)
@@ -61,7 +61,7 @@ ngoRouter.put('/:id/settings', authenticate, validate(updateSettingsSchema), asy
         next(err);
     }
 });
-ngoRouter.get('/:id/nearby-donations', authenticate, async (req, res, next) => {
+ngoRouter.get('/:id/nearby-donations', authenticate, authorize(['NGO_REP', 'PLATFORM_ADMIN']), requireOrgAccessParam('id'), async (req, res, next) => {
     try {
         const ngo = await Ngo.findById(req.params.id).lean();
         if (!ngo)

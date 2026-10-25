@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { BenchmarkResult } from '../models/BenchmarkResult.js';
 import { runBenchmarkSuite, BENCHMARK_QUERIES } from '../services/benchmarkService.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, authorize } from '../middleware/auth.js';
 export const benchmarkRouter = Router();
 // Get benchmark results
-benchmarkRouter.get('/', authenticate, async (req, res, next) => {
+benchmarkRouter.get('/', authenticate, authorize(['PLATFORM_ADMIN']), async (req, res, next) => {
     try {
         const { scale = '100k' } = req.query;
         let results = await BenchmarkResult.find({ datasetScale: scale }).sort({ runAt: -1 }).lean();
@@ -39,7 +39,7 @@ benchmarkRouter.get('/', authenticate, async (req, res, next) => {
     }
 });
 // Run benchmark on demand
-benchmarkRouter.post('/run', authenticate, async (req, res, next) => {
+benchmarkRouter.post('/run', authenticate, authorize(['PLATFORM_ADMIN']), async (req, res, next) => {
     try {
         const scale = req.body.scale || '100k';
         const results = await runBenchmarkSuite(scale);

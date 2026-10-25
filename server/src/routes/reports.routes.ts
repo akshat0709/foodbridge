@@ -2,12 +2,12 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { generateMonthlyPDFReport } from '../services/reportGenerator.js';
 import { MealLog } from '../models/MealLog.js';
 import { Listing } from '../models/Listing.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, authorize } from '../middleware/auth.js';
 
 export const reportsRouter = Router();
 
 // Monthly PDF download
-reportsRouter.get('/monthly-pdf', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+reportsRouter.get('/monthly-pdf', authenticate, authorize(['PLATFORM_ADMIN']), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const monthYear = req.query.monthYear as string;
     res.setHeader('Content-Type', 'application/pdf');
@@ -22,11 +22,13 @@ reportsRouter.get('/monthly-pdf', authenticate, async (req: Request, res: Respon
 });
 
 // CSV Export for Meal Logs
-reportsRouter.get('/export-meals-csv', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+reportsRouter.get('/export-meals-csv', authenticate, authorize(['MESS_ADMIN', 'PLATFORM_ADMIN']), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { messId, startDate, endDate } = req.query;
     const filter: any = {};
     if (messId && messId !== 'ALL') filter.messId = messId;
+    // Mess admins can only export their own mess's records.
+    if (req.user!.role === 'MESS_ADMIN') filter.messId = req.user!.organizationId || '000000000000000000000000';
     if (startDate || endDate) {
       filter.date = {};
       if (startDate) filter.date.$gte = new Date(startDate as string);
@@ -87,9 +89,11 @@ reportsRouter.get('/export-meals-csv', authenticate, async (req: Request, res: R
 });
 
 // CSV Export for Listings / Reductions
-reportsRouter.get('/export-listings-csv', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+reportsRouter.get('/export-listings-csv', authenticate, authorize(['MESS_ADMIN', 'PLATFORM_ADMIN']), async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const listings = await Listing.find({})
+    const listingFilter: any =
+      req.user!.role === 'MESS_ADMIN' ? { messId: req.user!.organizationId || '000000000000000000000000' } : {};
+    const listings = await Listing.find(listingFilter)
       .populate('messId', 'name')
       .populate('claimedByNgoId', 'name')
       .sort({ createdAt: -1 })

@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { Listing } from '../models/Listing.js';
 import { Mess } from '../models/Mess.js';
 import { Ngo } from '../models/Ngo.js';
-import { authenticate, authorize } from '../middleware/auth.js';
+import { authenticate, authorize, assertOrgAccess } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 import { createListing, claimListingAtomic, transitionListingStatus } from '../services/listingService.js';
 import { matchListingToNgos } from '../services/matchingEngine.js';
@@ -33,6 +33,8 @@ listingRouter.post(
   validate(createListingSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // Mess admins can only post surplus for their own mess.
+      assertOrgAccess(req.user, req.body.messId);
       const listing = await createListing({
         ...req.body,
         preparedAt: new Date(req.body.preparedAt),
@@ -67,17 +69,36 @@ listingRouter.get('/', authenticate, async (req: Request, res: Response, next: N
 
     const filter: any = {};
     if (status && status !== 'ALL') filter.status = status;
+    const user = req.user!;
     if (messId) filter.messId = messId;
     if (claimedByNgoId) filter.claimedByNgoId = claimedByNgoId;
     if (foodCategory && foodCategory !== 'ALL') filter.foodCategory = foodCategory;
     if (mealType && mealType !== 'ALL') filter.mealType = mealType;
+
+    // Scope by role: mess admins see only their mess's listings; NGO reps see
+    // open (AVAILABLE) listings plus the ones they have claimed.
+    if (user.role === 'MESS_ADMIN') {
+      filter.messId = user.organizationId || '000000000000000000000000';
+    } else if (user.role === 'NGO_REP') {
+      const ownNgo = user.organizationId || '000000000000000000000000';
+      if (claimedByNgoId && String(claimedByNgoId) !== String(ownNgo)) {
+        return next(new AppError('Forbidden: you can only view your own pickups.', 403, 'FORBIDDEN'));
+      }
+      if (!claimedByNgoId) {
+        filter.$or = [{ status: 'AVAILABLE' }, { claimedByNgoId: ownNgo }];
+      }
+    }
+
+    // Only allow sorting on known fields (sortBy comes straight from the query string).
+    const sortable = ['createdAt', 'updatedAt', 'collectBy', 'preparedAt', 'quantityKg', 'status'];
+    const sortField = sortable.includes(sortBy as string) ? (sortBy as string) : 'createdAt';
 
     const pageNum = Math.max(1, parseInt(page as string, 10));
     const limitNum = Math.min(100, Math.max(1, parseInt(limit as string, 10)));
     const skip = (pageNum - 1) * limitNum;
 
     const sortDir = sortOrder === 'asc' ? 1 : -1;
-    const sortObj: any = { [sortBy as string]: sortDir };
+    const sortObj: any = { [sortField]: sortDir };
 
     const [items, total] = await Promise.all([
       Listing.find(filter)
@@ -120,6 +141,15 @@ listingRouter.get('/:id', authenticate, async (req: Request, res: Response, next
       return next(new AppError('Listing not found', 404, 'NOT_FOUND'));
     }
 
+    const user = req.user!;
+    const messRef: any = listing.messId;
+    const ngoRef: any = listing.claimedByNgoId;
+    if (user.role === 'MESS_ADMIN') {
+      assertOrgAccess(user, messRef?._id ?? messRef);
+    } else if (user.role === 'NGO_REP' && listing.status !== 'AVAILABLE') {
+      assertOrgAccess(user, ngoRef?._id ?? ngoRef);
+    }
+
     res.json({
       success: true,
       data: listing,
@@ -136,7 +166,9 @@ listingRouter.post(
   authorize(['NGO_REP', 'PLATFORM_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const ngoId = req.body.ngoId || req.user!.organizationId;
+      // NGO reps always claim for their own NGO; only platform admins may claim on behalf of another.
+      const ngoId =
+        req.user!.role === 'PLATFORM_ADMIN' ? req.body.ngoId || req.user!.organizationId : req.user!.organizationId;
       if (!ngoId) {
         return next(new AppError('NGO identification missing', 400, 'NGO_ID_REQUIRED'));
       }
@@ -170,6 +202,18 @@ listingRouter.post(
         return next(new AppError('Target status is required', 400, 'STATUS_REQUIRED'));
       }
 
+      // Only the NGO that claimed the listing, the mess that posted it, or a platform admin may move it along.
+      const existing = await Listing.findById(req.params.id).select('messId claimedByNgoId').lean();
+      if (!existing) {
+        return next(new AppError('Listing not found', 404, 'NOT_FOUND'));
+      }
+      const user = req.user!;
+      if (user.role === 'NGO_REP') {
+        assertOrgAccess(user, existing.claimedByNgoId?.toString());
+      } else if (user.role === 'MESS_ADMIN') {
+        assertOrgAccess(user, existing.messId?.toString());
+      }
+
       const listing = await transitionListingStatus(
         req.params.id,
         status,
@@ -192,6 +236,7 @@ listingRouter.post(
 listingRouter.post(
   '/:id/match-candidates',
   authenticate,
+  authorize(['PLATFORM_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const listing = await Listing.findById(req.params.id).lean();

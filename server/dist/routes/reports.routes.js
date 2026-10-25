@@ -2,10 +2,10 @@ import { Router } from 'express';
 import { generateMonthlyPDFReport } from '../services/reportGenerator.js';
 import { MealLog } from '../models/MealLog.js';
 import { Listing } from '../models/Listing.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, authorize } from '../middleware/auth.js';
 export const reportsRouter = Router();
 // Monthly PDF download
-reportsRouter.get('/monthly-pdf', authenticate, async (req, res, next) => {
+reportsRouter.get('/monthly-pdf', authenticate, authorize(['PLATFORM_ADMIN']), async (req, res, next) => {
     try {
         const monthYear = req.query.monthYear;
         res.setHeader('Content-Type', 'application/pdf');
@@ -17,12 +17,15 @@ reportsRouter.get('/monthly-pdf', authenticate, async (req, res, next) => {
     }
 });
 // CSV Export for Meal Logs
-reportsRouter.get('/export-meals-csv', authenticate, async (req, res, next) => {
+reportsRouter.get('/export-meals-csv', authenticate, authorize(['MESS_ADMIN', 'PLATFORM_ADMIN']), async (req, res, next) => {
     try {
         const { messId, startDate, endDate } = req.query;
         const filter = {};
         if (messId && messId !== 'ALL')
             filter.messId = messId;
+        // Mess admins can only export their own mess's records.
+        if (req.user.role === 'MESS_ADMIN')
+            filter.messId = req.user.organizationId || '000000000000000000000000';
         if (startDate || endDate) {
             filter.date = {};
             if (startDate)
@@ -80,9 +83,10 @@ reportsRouter.get('/export-meals-csv', authenticate, async (req, res, next) => {
     }
 });
 // CSV Export for Listings / Reductions
-reportsRouter.get('/export-listings-csv', authenticate, async (req, res, next) => {
+reportsRouter.get('/export-listings-csv', authenticate, authorize(['MESS_ADMIN', 'PLATFORM_ADMIN']), async (req, res, next) => {
     try {
-        const listings = await Listing.find({})
+        const listingFilter = req.user.role === 'MESS_ADMIN' ? { messId: req.user.organizationId || '000000000000000000000000' } : {};
+        const listings = await Listing.find(listingFilter)
             .populate('messId', 'name')
             .populate('claimedByNgoId', 'name')
             .sort({ createdAt: -1 })

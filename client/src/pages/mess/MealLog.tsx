@@ -11,6 +11,7 @@ export const MealLog: React.FC = () => {
   const [page, setPage] = useState(1);
   const [mealTypeFilter, setMealTypeFilter] = useState('ALL');
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   // Modal for new single meal entry
   const [showAddModal, setShowAddModal] = useState(false);
@@ -40,14 +41,15 @@ export const MealLog: React.FC = () => {
     // If no specific mess ID, query analytics endpoint or fallback
     apiRequest<{ items: any[]; pagination: any }>(url)
       .then(res => {
+        setLoadError(null);
         setLogs(res.items);
         setTotal(res.pagination.total);
       })
-      .catch(() => {
-        // Fallback for general search
-        apiRequest<{ items: any[]; pagination: any }>(`/listings?page=${page}&limit=25`)
-          .then(r => setLogs(r.items))
-          .catch(() => {});
+      .catch((err: any) => {
+        console.error('[MealLog] Failed to load meal logs:', err);
+        setLogs([]);
+        setTotal(0);
+        setLoadError(err.message || 'Failed to load meal logs');
       })
       .finally(() => setIsLoading(false));
   };
@@ -58,7 +60,10 @@ export const MealLog: React.FC = () => {
 
   const handleAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user?.organizationId) return;
+    if (!user?.organizationId) {
+      window.alert('Your account is not linked to a mess, so meal sessions cannot be recorded. Sign in as a mess admin.');
+      return;
+    }
 
     try {
       await apiRequest(`/messes/${user.organizationId}/meal-logs`, {
@@ -223,6 +228,12 @@ export const MealLog: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {loadError && (
+        <div className="p-3 rounded border border-[#FECACA] bg-[#FEE2E2] dark:bg-[#7F1D1D] text-xs text-[#991B1B] dark:text-[#FCA5A5]">
+          {loadError}
+        </div>
+      )}
 
       <DataTable
         columns={columns}

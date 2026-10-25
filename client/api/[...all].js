@@ -11,14 +11,6 @@ var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require
   if (typeof require !== "undefined") return require.apply(this, arguments);
   throw Error('Dynamic require of "' + x + '" is not supported');
 });
-var __esm = (fn, res, err) => function __init() {
-  if (err) throw err[0];
-  try {
-    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
-  } catch (e) {
-    throw err = [e], e;
-  }
-};
 var __commonJS = (cb, mod) => function __require2() {
   try {
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
@@ -46,7 +38,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // node_modules/depd/index.js
 var require_depd = __commonJS({
@@ -1228,7 +1219,7 @@ var require_browser = __commonJS({
 // node_modules/debug/src/node.js
 var require_node = __commonJS({
   "node_modules/debug/src/node.js"(exports, module) {
-    var tty2 = __require("tty");
+    var tty = __require("tty");
     var util2 = __require("util");
     exports = module.exports = require_debug();
     exports.init = init;
@@ -1259,7 +1250,7 @@ var require_node = __commonJS({
     }
     var stream = 1 === fd ? process.stdout : 2 === fd ? process.stderr : createWritableStdioStream(fd);
     function useColors() {
-      return "colors" in exports.inspectOpts ? Boolean(exports.inspectOpts.colors) : tty2.isatty(fd);
+      return "colors" in exports.inspectOpts ? Boolean(exports.inspectOpts.colors) : tty.isatty(fd);
     }
     exports.formatters.o = function(v) {
       this.inspectOpts.colors = this.useColors;
@@ -1301,7 +1292,7 @@ var require_node = __commonJS({
       var tty_wrap = process.binding("tty_wrap");
       switch (tty_wrap.guessHandleType(fd2)) {
         case "TTY":
-          stream2 = new tty2.WriteStream(fd2);
+          stream2 = new tty.WriteStream(fd2);
           stream2._type = "tty";
           if (stream2._handle && stream2._handle.unref) {
             stream2._handle.unref();
@@ -35093,8 +35084,8 @@ var require_client_metadata = __commonJS({
     exports.makeClientMetadata = makeClientMetadata;
     exports.addContainerMetadata = addContainerMetadata;
     exports.getFAASEnv = getFAASEnv;
-    var os2 = __require("os");
-    var process3 = __require("process");
+    var os = __require("os");
+    var process2 = __require("process");
     var bson_1 = require_bson2();
     var error_1 = require_error();
     var utils_1 = require_utils3();
@@ -35163,7 +35154,7 @@ var require_client_metadata = __commonJS({
       if (!metadataDocument.ifItFitsItSits("platform", runtimeInfo)) {
         throw new error_1.MongoInvalidArgumentError("Unable to include driverInfo platform, metadata cannot exceed 512 bytes");
       }
-      const osInfo = (/* @__PURE__ */ new Map()).set("name", process3.platform).set("architecture", process3.arch).set("version", os2.release()).set("type", os2.type());
+      const osInfo = (/* @__PURE__ */ new Map()).set("name", process2.platform).set("architecture", process2.arch).set("version", os.release()).set("type", os.type());
       if (!metadataDocument.ifItFitsItSits("os", osInfo)) {
         for (const key of osInfo.keys()) {
           osInfo.delete(key);
@@ -35192,7 +35183,7 @@ var require_client_metadata = __commonJS({
       const containerMetadata = {};
       dockerPromise ??= (0, utils_1.fileIsAccessible)("/.dockerenv");
       const isDocker = await dockerPromise;
-      const { KUBERNETES_SERVICE_HOST = "" } = process3.env;
+      const { KUBERNETES_SERVICE_HOST = "" } = process2.env;
       const isKubernetes = KUBERNETES_SERVICE_HOST.length > 0 ? true : false;
       if (isDocker)
         containerMetadata.runtime = "docker";
@@ -35221,7 +35212,7 @@ var require_client_metadata = __commonJS({
       return extendedMetadata.toObject();
     }
     function getFAASEnv() {
-      const { AWS_EXECUTION_ENV = "", AWS_LAMBDA_RUNTIME_API = "", FUNCTIONS_WORKER_RUNTIME = "", K_SERVICE = "", FUNCTION_NAME = "", VERCEL = "", AWS_LAMBDA_FUNCTION_MEMORY_SIZE = "", AWS_REGION = "", FUNCTION_MEMORY_MB = "", FUNCTION_REGION = "", FUNCTION_TIMEOUT_SEC = "", VERCEL_REGION = "" } = process3.env;
+      const { AWS_EXECUTION_ENV = "", AWS_LAMBDA_RUNTIME_API = "", FUNCTIONS_WORKER_RUNTIME = "", K_SERVICE = "", FUNCTION_NAME = "", VERCEL = "", AWS_LAMBDA_FUNCTION_MEMORY_SIZE = "", AWS_REGION = "", FUNCTION_MEMORY_MB = "", FUNCTION_REGION = "", FUNCTION_TIMEOUT_SEC = "", VERCEL_REGION = "" } = process2.env;
       const isAWSFaaS = AWS_EXECUTION_ENV.startsWith("AWS_Lambda_") || AWS_LAMBDA_RUNTIME_API.length > 0;
       const isAzureFaaS = FUNCTIONS_WORKER_RUNTIME.length > 0;
       const isGCPFaaS = K_SERVICE.length > 0 || FUNCTION_NAME.length > 0;
@@ -35266,13 +35257,13 @@ var require_client_metadata = __commonJS({
     function getRuntimeInfo() {
       if ("Deno" in globalThis) {
         const version = typeof Deno?.version?.deno === "string" ? Deno?.version?.deno : "0.0.0-unknown";
-        return `Deno v${version}, ${os2.endianness()}`;
+        return `Deno v${version}, ${os.endianness()}`;
       }
       if ("Bun" in globalThis) {
         const version = typeof Bun?.version === "string" ? Bun?.version : "0.0.0-unknown";
-        return `Bun v${version}, ${os2.endianness()}`;
+        return `Bun v${version}, ${os.endianness()}`;
       }
-      return `Node.js ${process3.version}, ${os2.endianness()}`;
+      return `Node.js ${process2.version}, ${os.endianness()}`;
     }
   }
 });
@@ -78618,159 +78609,137 @@ var require_browser2 = __commonJS({
   }
 });
 
-// node_modules/supports-color/index.js
-var supports_color_exports = {};
-__export(supports_color_exports, {
-  createSupportsColor: () => createSupportsColor,
-  default: () => supports_color_default
+// node_modules/has-flag/index.js
+var require_has_flag = __commonJS({
+  "node_modules/has-flag/index.js"(exports, module) {
+    "use strict";
+    module.exports = (flag, argv = process.argv) => {
+      const prefix = flag.startsWith("-") ? "" : flag.length === 1 ? "-" : "--";
+      const position = argv.indexOf(prefix + flag);
+      const terminatorPosition = argv.indexOf("--");
+      return position !== -1 && (terminatorPosition === -1 || position < terminatorPosition);
+    };
+  }
 });
-import process2 from "node:process";
-import os from "node:os";
-import tty from "node:tty";
-function hasFlag(flag, argv = globalThis.Deno ? globalThis.Deno.args : process2.argv) {
-  const prefix = flag.startsWith("-") ? "" : flag.length === 1 ? "-" : "--";
-  const position = argv.indexOf(prefix + flag);
-  const terminatorPosition = argv.indexOf("--");
-  return position !== -1 && (terminatorPosition === -1 || position < terminatorPosition);
-}
-function envForceColor() {
-  if (!("FORCE_COLOR" in env)) {
-    return;
-  }
-  if (env.FORCE_COLOR === "true") {
-    return 1;
-  }
-  if (env.FORCE_COLOR === "false") {
-    return 0;
-  }
-  if (env.FORCE_COLOR.length === 0) {
-    return 1;
-  }
-  const level = Math.min(Number.parseInt(env.FORCE_COLOR, 10), 3);
-  if (![0, 1, 2, 3].includes(level)) {
-    return;
-  }
-  return level;
-}
-function translateLevel(level) {
-  if (level === 0) {
-    return false;
-  }
-  return {
-    level,
-    hasBasic: true,
-    has256: level >= 2,
-    has16m: level >= 3
-  };
-}
-function _supportsColor(haveStream, { streamIsTTY, sniffFlags = true } = {}) {
-  const noFlagForceColor = envForceColor();
-  if (noFlagForceColor !== void 0) {
-    flagForceColor = noFlagForceColor;
-  }
-  const forceColor = sniffFlags ? flagForceColor : noFlagForceColor;
-  if (forceColor === 0) {
-    return 0;
-  }
-  if (sniffFlags) {
-    if (hasFlag("color=16m") || hasFlag("color=full") || hasFlag("color=truecolor")) {
-      return 3;
-    }
-    if (hasFlag("color=256")) {
-      return 2;
-    }
-  }
-  if ("TF_BUILD" in env && "AGENT_NAME" in env) {
-    return 1;
-  }
-  if (haveStream && !streamIsTTY && forceColor === void 0) {
-    return 0;
-  }
-  const min = forceColor || 0;
-  if (env.TERM === "dumb") {
-    return min;
-  }
-  if (process2.platform === "win32") {
-    const osRelease = os.release().split(".");
-    if (Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
-      return Number(osRelease[2]) >= 14931 ? 3 : 2;
-    }
-    return 1;
-  }
-  if ("CI" in env) {
-    if (["GITHUB_ACTIONS", "GITEA_ACTIONS", "CIRCLECI"].some((key) => key in env)) {
-      return 3;
-    }
-    if (["TRAVIS", "APPVEYOR", "GITLAB_CI", "BUILDKITE", "DRONE"].some((sign) => sign in env) || env.CI_NAME === "codeship") {
-      return 1;
-    }
-    return min;
-  }
-  if ("TEAMCITY_VERSION" in env) {
-    return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env.TEAMCITY_VERSION) ? 1 : 0;
-  }
-  if (env.COLORTERM === "truecolor") {
-    return 3;
-  }
-  if (env.TERM === "xterm-kitty") {
-    return 3;
-  }
-  if (env.TERM === "xterm-ghostty") {
-    return 3;
-  }
-  if (env.TERM === "wezterm") {
-    return 3;
-  }
-  if ("TERM_PROGRAM" in env) {
-    const version = Number.parseInt((env.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
-    switch (env.TERM_PROGRAM) {
-      case "iTerm.app": {
-        return version >= 3 ? 3 : 2;
-      }
-      case "Apple_Terminal": {
-        return 2;
-      }
-    }
-  }
-  if (/-256(color)?$/i.test(env.TERM)) {
-    return 2;
-  }
-  if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env.TERM)) {
-    return 1;
-  }
-  if ("COLORTERM" in env) {
-    return 1;
-  }
-  return min;
-}
-function createSupportsColor(stream, options = {}) {
-  const level = _supportsColor(stream, {
-    streamIsTTY: stream && stream.isTTY,
-    ...options
-  });
-  return translateLevel(level);
-}
-var env, flagForceColor, supportsColor, supports_color_default;
-var init_supports_color = __esm({
-  "node_modules/supports-color/index.js"() {
-    ({ env } = process2);
+
+// node_modules/supports-color/index.js
+var require_supports_color = __commonJS({
+  "node_modules/supports-color/index.js"(exports, module) {
+    "use strict";
+    var os = __require("os");
+    var tty = __require("tty");
+    var hasFlag = require_has_flag();
+    var { env: env2 } = process;
+    var flagForceColor;
     if (hasFlag("no-color") || hasFlag("no-colors") || hasFlag("color=false") || hasFlag("color=never")) {
       flagForceColor = 0;
     } else if (hasFlag("color") || hasFlag("colors") || hasFlag("color=true") || hasFlag("color=always")) {
       flagForceColor = 1;
     }
-    supportsColor = {
-      stdout: createSupportsColor({ isTTY: tty.isatty(1) }),
-      stderr: createSupportsColor({ isTTY: tty.isatty(2) })
+    function envForceColor() {
+      if ("FORCE_COLOR" in env2) {
+        if (env2.FORCE_COLOR === "true") {
+          return 1;
+        }
+        if (env2.FORCE_COLOR === "false") {
+          return 0;
+        }
+        return env2.FORCE_COLOR.length === 0 ? 1 : Math.min(Number.parseInt(env2.FORCE_COLOR, 10), 3);
+      }
+    }
+    function translateLevel(level) {
+      if (level === 0) {
+        return false;
+      }
+      return {
+        level,
+        hasBasic: true,
+        has256: level >= 2,
+        has16m: level >= 3
+      };
+    }
+    function supportsColor(haveStream, { streamIsTTY, sniffFlags = true } = {}) {
+      const noFlagForceColor = envForceColor();
+      if (noFlagForceColor !== void 0) {
+        flagForceColor = noFlagForceColor;
+      }
+      const forceColor = sniffFlags ? flagForceColor : noFlagForceColor;
+      if (forceColor === 0) {
+        return 0;
+      }
+      if (sniffFlags) {
+        if (hasFlag("color=16m") || hasFlag("color=full") || hasFlag("color=truecolor")) {
+          return 3;
+        }
+        if (hasFlag("color=256")) {
+          return 2;
+        }
+      }
+      if (haveStream && !streamIsTTY && forceColor === void 0) {
+        return 0;
+      }
+      const min = forceColor || 0;
+      if (env2.TERM === "dumb") {
+        return min;
+      }
+      if (process.platform === "win32") {
+        const osRelease = os.release().split(".");
+        if (Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
+          return Number(osRelease[2]) >= 14931 ? 3 : 2;
+        }
+        return 1;
+      }
+      if ("CI" in env2) {
+        if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "GITHUB_ACTIONS", "BUILDKITE", "DRONE"].some((sign) => sign in env2) || env2.CI_NAME === "codeship") {
+          return 1;
+        }
+        return min;
+      }
+      if ("TEAMCITY_VERSION" in env2) {
+        return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env2.TEAMCITY_VERSION) ? 1 : 0;
+      }
+      if (env2.COLORTERM === "truecolor") {
+        return 3;
+      }
+      if ("TERM_PROGRAM" in env2) {
+        const version = Number.parseInt((env2.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
+        switch (env2.TERM_PROGRAM) {
+          case "iTerm.app":
+            return version >= 3 ? 3 : 2;
+          case "Apple_Terminal":
+            return 2;
+        }
+      }
+      if (/-256(color)?$/i.test(env2.TERM)) {
+        return 2;
+      }
+      if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env2.TERM)) {
+        return 1;
+      }
+      if ("COLORTERM" in env2) {
+        return 1;
+      }
+      return min;
+    }
+    function getSupportLevel(stream, options = {}) {
+      const level = supportsColor(stream, {
+        streamIsTTY: stream && stream.isTTY,
+        ...options
+      });
+      return translateLevel(level);
+    }
+    module.exports = {
+      supportsColor: getSupportLevel,
+      stdout: getSupportLevel({ isTTY: tty.isatty(1) }),
+      stderr: getSupportLevel({ isTTY: tty.isatty(2) })
     };
-    supports_color_default = supportsColor;
   }
 });
 
 // node_modules/mquery/node_modules/debug/src/node.js
 var require_node3 = __commonJS({
   "node_modules/mquery/node_modules/debug/src/node.js"(exports, module) {
-    var tty2 = __require("tty");
+    var tty = __require("tty");
     var util2 = __require("util");
     exports.init = init;
     exports.log = log;
@@ -78785,8 +78754,8 @@ var require_node3 = __commonJS({
     );
     exports.colors = [6, 2, 3, 4, 5, 1];
     try {
-      const supportsColor2 = (init_supports_color(), __toCommonJS(supports_color_exports));
-      if (supportsColor2 && (supportsColor2.stderr || supportsColor2).level >= 2) {
+      const supportsColor = require_supports_color();
+      if (supportsColor && (supportsColor.stderr || supportsColor).level >= 2) {
         exports.colors = [
           20,
           21,
@@ -78888,7 +78857,7 @@ var require_node3 = __commonJS({
       return obj;
     }, {});
     function useColors() {
-      return "colors" in exports.inspectOpts ? Boolean(exports.inspectOpts.colors) : tty2.isatty(process.stderr.fd);
+      return "colors" in exports.inspectOpts ? Boolean(exports.inspectOpts.colors) : tty.isatty(process.stderr.fd);
     }
     function formatArgs(args) {
       const { namespace: name, useColors: useColors2 } = this;
@@ -87228,7 +87197,7 @@ var require_model = __commonJS({
       }
       return this.$__collection.listIndexes().toArray();
     };
-    Model.ensureIndexes = async function ensureIndexes(options) {
+    Model.ensureIndexes = async function ensureIndexes2(options) {
       _checkContext(this, "ensureIndexes");
       if (typeof arguments[0] === "function" || typeof arguments[1] === "function") {
         throw new MongooseError("Model.ensureIndexes() no longer accepts a callback");
@@ -89815,7 +89784,7 @@ var require_main = __commonJS({
   "node_modules/dotenv/lib/main.js"(exports, module) {
     var fs = __require("fs");
     var path = __require("path");
-    var os2 = __require("os");
+    var os = __require("os");
     var crypto2 = __require("crypto");
     var packageJson = require_package3();
     var version = packageJson.version;
@@ -89938,7 +89907,7 @@ var require_main = __commonJS({
       return null;
     }
     function _resolveHome(envPath) {
-      return envPath[0] === "~" ? path.join(os2.homedir(), envPath.slice(1)) : envPath;
+      return envPath[0] === "~" ? path.join(os.homedir(), envPath.slice(1)) : envPath;
     }
     function _configVault(options) {
       const debug = Boolean(options && options.debug);
@@ -94546,26 +94515,49 @@ var helmet = Object.assign(
 var import_morgan = __toESM(require_morgan(), 1);
 var import_mongoose16 = __toESM(require_mongoose2(), 1);
 
-// server/src/db.ts
-var import_mongoose8 = __toESM(require_mongoose2(), 1);
-
 // server/src/config.ts
 var import_dotenv = __toESM(require_main(), 1);
 import_dotenv.default.config();
+var env = process.env.NODE_ENV || "development";
+var isProduction = env === "production";
+var DEV_ONLY_JWT_SECRET = "foodbridge-local-dev-only-secret";
+var warnedDevSecret = false;
+function getJwtSecret() {
+  const secret = process.env.JWT_SECRET;
+  const isPlaceholder = !secret || secret === "replace-with-a-long-random-secret";
+  if (!isPlaceholder && secret.length >= 16) return secret;
+  if (isProduction) {
+    throw Object.assign(
+      new Error("Server misconfigured: JWT_SECRET must be set (at least 16 characters)."),
+      { statusCode: 500, code: "AUTH_NOT_CONFIGURED" }
+    );
+  }
+  if (!warnedDevSecret) {
+    console.warn("[Config] JWT_SECRET not set; using a local development key. Set JWT_SECRET before deploying.");
+    warnedDevSecret = true;
+  }
+  return DEV_ONLY_JWT_SECRET;
+}
 var config = {
-  env: process.env.NODE_ENV || "development",
+  env,
+  isProduction,
   port: parseInt(process.env.PORT || "5050", 10),
   mongodbUri: process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/foodbridge",
-  jwtSecret: process.env.JWT_SECRET || "foodbridge_super_secure_jwt_secret_key_change_in_production_2026",
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
   mlServiceUrl: process.env.ML_SERVICE_URL || "http://127.0.0.1:8000",
-  corsOrigin: process.env.CORS_ORIGIN || "http://localhost:5173",
+  // Comma-separated list of allowed browser origins for cross-origin API calls.
+  // Same-origin requests (the Vite proxy locally, the Vercel rewrite in production)
+  // don't need to be listed.
+  corsOrigins: (process.env.CORS_ORIGIN || "http://localhost:5173").split(",").map((o) => o.trim().replace(/\/+$/, "")).filter(Boolean),
   impact: {
     kgPerMeal: parseFloat(process.env.KG_PER_MEAL || "0.4"),
     co2eFactorPerKg: parseFloat(process.env.CO2E_FACTOR_PER_KG || "2.5"),
     costPerKgRs: parseFloat(process.env.COST_PER_KG_RS || "60.0")
   }
 };
+
+// server/src/db.ts
+var import_mongoose12 = __toESM(require_mongoose2(), 1);
 
 // server/src/services/bootstrapService.ts
 var import_mongoose7 = __toESM(require_mongoose2(), 1);
@@ -96651,231 +96643,398 @@ var NGO_NAMES = [
   "Sahyog Food Bank",
   "Vanguard Relief Mission"
 ];
+var DEMO_USER_IDS = {
+  PLATFORM_ADMIN: "6adcd57184b8ffbca383bf2e",
+  MESS_ADMIN: "6adcd57184b8ffbca383bf30",
+  NGO_REP: "6adcd57184b8ffbca383bf31"
+};
+var BASE_LAT = 28.545;
+var BASE_LNG = 77.192;
 async function autoBootstrapIfEmpty() {
   try {
-    const messCount = await Mess.countDocuments();
-    if (messCount > 0) {
-      console.log(`[Bootstrap] Database already initialized (${messCount} messes found).`);
+    const [messCount, ngoCount, listingCount, mealLogCount] = await Promise.all([
+      Mess.countDocuments(),
+      Ngo.countDocuments(),
+      Listing.countDocuments(),
+      MealLog.countDocuments()
+    ]);
+    const demoEmails = ["platform.admin@foodbridge.org", "mess.admin@foodbridge.org", "ngo.rep@foodbridge.org"];
+    const existingDemoUsers = await User.countDocuments({ email: { $in: demoEmails } });
+    if (messCount > 0 && ngoCount > 0 && listingCount > 0 && mealLogCount > 0 && existingDemoUsers === demoEmails.length) {
+      console.log(`[Bootstrap] Database already initialized (${messCount} messes, ${ngoCount} NGOs).`);
       return;
     }
-    console.log("[Bootstrap] Database is empty. Auto-seeding initial data...");
-    await SystemSetting.findOneAndUpdate(
+    console.log("[Bootstrap] Seeding missing demo data...");
+    await SystemSetting.updateOne(
       { key: "GLOBAL_CONFIG" },
       {
-        weights: {
-          distanceWeight: 0.35,
-          capacityWeight: 0.25,
-          deadlineWeight: 0.2,
-          reliabilityWeight: 0.2
-        },
-        impactFactors: {
-          kgPerMeal: 0.4,
-          co2eFactorPerKg: 2.5,
-          costPerKgRs: 60
-        },
-        driftThresholdMae: 2
+        $setOnInsert: {
+          weights: {
+            distanceWeight: 0.35,
+            capacityWeight: 0.25,
+            deadlineWeight: 0.2,
+            reliabilityWeight: 0.2
+          },
+          impactFactors: {
+            kgPerMeal: 0.4,
+            co2eFactorPerKg: 2.5,
+            costPerKgRs: 60
+          },
+          driftThresholdMae: 2
+        }
       },
-      { upsert: true, new: true }
+      { upsert: true }
     );
-    const baseLat = 28.545;
-    const baseLng = 77.192;
     const campuses = ["North Campus", "South Campus", "East Technological Hub", "West Enclave"];
-    const messDocs = MESS_NAMES.map((name, i) => {
-      const latOffset = (i % 10 - 5) * 0.02;
-      const lngOffset = (Math.floor(i / 10) - 3) * 0.02;
-      const capacity = 400 + i * 15;
-      return {
-        _id: new import_mongoose7.default.Types.ObjectId(),
-        name,
-        campus: campuses[i % campuses.length],
-        location: {
-          type: "Point",
-          coordinates: [baseLng + lngOffset, baseLat + latOffset]
-        },
-        address: `${name}, Block ${String.fromCharCode(65 + i % 6)}, ${campuses[i % campuses.length]}`,
-        capacity,
-        contactPerson: `Manager ${name.split(" ")[0]}`,
-        phone: `+91 98${1e7 + i}`,
-        averageDailyLeftoverKg: Math.round(capacity * 0.08),
-        overprepareTendency: 1.05,
-        isActive: true
-      };
-    });
-    const createdMesses = await Mess.insertMany(messDocs);
-    const ngoDocs = NGO_NAMES.map((name, i) => {
-      const latOffset = (i % 5 - 2) * 0.035;
-      const lngOffset = (Math.floor(i / 5) - 2) * 0.035;
-      return {
-        _id: new import_mongoose7.default.Types.ObjectId(),
-        name,
-        location: {
-          type: "Point",
-          coordinates: [baseLng + lngOffset, baseLat + latOffset]
-        },
-        address: `${name}, Community Hub ${i + 1}`,
-        vehicleCapacityKg: 200 + i * 10,
-        serviceRadiusKm: 15 + i % 10,
-        operatingHours: { start: "07:00", end: "23:30" },
-        contactPerson: `Coordinator ${name.split(" ")[0]}`,
-        phone: `+91 91${1e7 + i}`,
-        reliabilityStats: {
-          totalAssigned: 40 + i,
-          totalCompleted: 38 + i,
-          totalExpiredOrFailed: 2,
-          averageDelayMinutes: 12,
-          bayesianScore: 0.94,
-          timeOfDayProfile: {
-            morningRate: 0.95,
-            afternoonRate: 0.92,
-            eveningRate: 0.96,
-            nightRate: 0.88
-          }
-        },
-        isActive: true
-      };
-    });
-    const createdNgos = await Ngo.insertMany(ngoDocs);
-    const salt = await bcryptjs_default.genSalt(10);
-    const passwordHash = await bcryptjs_default.hash("Pass1234!", salt);
+    if (messCount === 0) {
+      const messDocs = MESS_NAMES.map((name, i) => {
+        const latOffset = (i % 10 - 5) * 0.02;
+        const lngOffset = (Math.floor(i / 10) - 3) * 0.02;
+        const capacity = 400 + i * 15;
+        return {
+          name,
+          campus: campuses[i % campuses.length],
+          location: {
+            type: "Point",
+            coordinates: [BASE_LNG + lngOffset, BASE_LAT + latOffset]
+          },
+          address: `${name}, Block ${String.fromCharCode(65 + i % 6)}, ${campuses[i % campuses.length]}`,
+          capacity,
+          contactPerson: `Manager ${name.split(" ")[0]}`,
+          phone: `+91 98${1e7 + i}`,
+          averageDailyLeftoverKg: Math.round(capacity * 0.08),
+          overprepareTendency: 1.05,
+          isActive: true
+        };
+      });
+      await Mess.insertMany(messDocs);
+      console.log(`[Bootstrap] Inserted ${messDocs.length} messes.`);
+    }
+    if (ngoCount === 0) {
+      const ngoDocs = NGO_NAMES.map((name, i) => {
+        const latOffset = (i % 5 - 2) * 0.035;
+        const lngOffset = (Math.floor(i / 5) - 2) * 0.035;
+        return {
+          name,
+          registrationNumber: `NGO/DEL/${2020 + i % 5}/${1e3 + i}`,
+          location: {
+            type: "Point",
+            coordinates: [BASE_LNG + lngOffset, BASE_LAT + latOffset]
+          },
+          address: `${name}, Community Hub ${i + 1}`,
+          vehicleCapacityKg: 200 + i * 10,
+          serviceRadiusKm: 15 + i % 10,
+          operatingHours: { start: "07:00", end: "23:30" },
+          contactPerson: `Coordinator ${name.split(" ")[0]}`,
+          phone: `+91 91${1e7 + i}`,
+          reliabilityStats: {
+            totalAssigned: 40 + i,
+            totalCompleted: 38 + i,
+            totalExpiredOrFailed: 2,
+            averageDelayMinutes: 12,
+            bayesianScore: 0.94,
+            timeOfDayProfile: {
+              morningRate: 0.95,
+              afternoonRate: 0.92,
+              eveningRate: 0.96,
+              nightRate: 0.88
+            }
+          },
+          isActive: true
+        };
+      });
+      await Ngo.insertMany(ngoDocs);
+      console.log(`[Bootstrap] Inserted ${ngoDocs.length} NGOs.`);
+    }
+    const primaryMess = await Mess.findOne({ name: MESS_NAMES[0] }) || await Mess.findOne().sort({ name: 1 });
+    const secondaryMess = await Mess.findOne({ name: MESS_NAMES[1] }) || await Mess.findOne({ _id: { $ne: primaryMess?._id } });
+    const primaryNgo = await Ngo.findOne({ name: NGO_NAMES[0] }) || await Ngo.findOne().sort({ name: 1 });
+    if (!primaryMess || !secondaryMess || !primaryNgo) {
+      console.error("[Bootstrap] Cannot seed users/listings: messes or NGOs are missing.");
+      return;
+    }
+    const passwordHash = await bcryptjs_default.hash("Pass1234!", 10);
     const users = [
       {
+        _id: new import_mongoose7.default.Types.ObjectId(DEMO_USER_IDS.MESS_ADMIN),
         email: "mess.admin@foodbridge.org",
-        passwordHash,
         name: "Rohan Sharma (Mess Admin)",
         role: "MESS_ADMIN",
         phone: "+91 9876543210",
-        organizationId: createdMesses[0]._id
+        organizationId: primaryMess._id
       },
       {
+        _id: new import_mongoose7.default.Types.ObjectId(DEMO_USER_IDS.NGO_REP),
         email: "ngo.rep@foodbridge.org",
-        passwordHash,
         name: "Pooja Verma (NGO Rep)",
         role: "NGO_REP",
         phone: "+91 9876543211",
-        organizationId: createdNgos[0]._id
+        organizationId: primaryNgo._id
       },
       {
+        _id: new import_mongoose7.default.Types.ObjectId(DEMO_USER_IDS.PLATFORM_ADMIN),
         email: "platform.admin@foodbridge.org",
-        passwordHash,
         name: "Aditi Rao (Platform Admin)",
         role: "PLATFORM_ADMIN",
         phone: "+91 9876543212"
       }
     ];
-    await User.insertMany(users);
-    const listings = [
-      {
-        messId: createdMesses[0]._id,
-        foodItems: [
-          { name: "Steamed Basmati Rice", category: "RICE_GRAINS", quantityKg: 35 },
-          { name: "Yellow Dal Tadka", category: "CURRY_DAL", quantityKg: 20 }
-        ],
-        totalQuantityKg: 55,
-        estimatedServings: 135,
-        preparedAt: new Date(Date.now() - 36e5),
-        expiryDeadline: new Date(Date.now() + 144e5),
-        status: "AVAILABLE",
-        pickupLocation: {
-          type: "Point",
-          coordinates: [baseLng, baseLat],
-          address: `${MESS_NAMES[0]}, Central Kitchen Ramp`
-        },
-        contactPhone: "+91 9876543210",
-        dietaryType: "VEG",
-        qualityCheck: {
-          isFresh: true,
-          storageCondition: "HOT_CONTAINER",
-          temperatureCelsius: 65,
-          notes: "Freshly prepared lunch surplus"
-        }
-      },
-      {
-        messId: createdMesses[1]._id,
-        foodItems: [
-          { name: "Chapati / Whole Wheat Roti", category: "ROTI_BREAD", quantityKg: 25 },
-          { name: "Mixed Vegetable Curry", category: "VEGETABLES", quantityKg: 30 }
-        ],
-        totalQuantityKg: 55,
-        estimatedServings: 120,
-        preparedAt: new Date(Date.now() - 72e5),
-        expiryDeadline: new Date(Date.now() + 108e5),
-        status: "CLAIMED",
-        claimedByNgoId: createdNgos[0]._id,
-        claimedAt: new Date(Date.now() - 18e5),
-        pickupLocation: {
-          type: "Point",
-          coordinates: [baseLng + 0.01, baseLat + 0.01],
-          address: `${MESS_NAMES[1]}, Gate 2`
-        },
-        contactPhone: "+91 9876543211",
-        dietaryType: "VEG"
-      }
-    ];
-    await Listing.insertMany(listings);
-    const sampleLogs = [];
-    const mealTypes = ["BREAKFAST", "LUNCH", "SNACKS", "DINNER"];
-    const foodCats = [
-      "RICE_GRAINS",
-      "CURRY_DAL",
-      "ROTI_BREAD",
-      "VEGETABLES",
-      "DESSERT_SNACK"
-    ];
-    for (let day = 0; day < 7; day++) {
-      const date = new Date(Date.now() - day * 864e5);
-      for (const m of createdMesses.slice(0, 5)) {
-        for (const mt of mealTypes) {
-          sampleLogs.push({
-            messId: m._id,
-            date,
-            mealType: mt,
-            foodCategory: foodCats[Math.floor(Math.random() * foodCats.length)],
-            plannedAttendance: 500,
-            actualAttendance: 460 + Math.floor(Math.random() * 50),
-            preparedKg: 120,
-            servedKg: 105,
-            leftoverKg: 15,
-            donatedKg: 12,
-            isHoliday: day % 6 === 0,
-            isExamWeek: false
-          });
-        }
+    for (const u of users) {
+      const exists = await User.exists({ $or: [{ email: u.email }, { _id: u._id }] });
+      if (!exists) {
+        await User.create({ ...u, passwordHash });
+        console.log(`[Bootstrap] Created demo user ${u.email}.`);
       }
     }
-    await MealLog.insertMany(sampleLogs);
-    console.log("[Bootstrap] Initial data created successfully: 60 Messes, 25 NGOs, 3 Demo Users, 2 Listings, 140 MealLogs.");
+    if (listingCount === 0) {
+      const now = Date.now();
+      const listings = [
+        {
+          messId: primaryMess._id,
+          title: "Lunch Surplus: Rice & Dal",
+          foodCategory: "COOKED_MEALS",
+          mealType: "LUNCH",
+          quantityKg: 55,
+          portionsEstimate: 135,
+          preparedAt: new Date(now - 36e5),
+          collectBy: new Date(now + 144e5),
+          dietaryTags: ["VEG"],
+          status: "AVAILABLE",
+          pickupLocation: primaryMess.location,
+          pickupAddress: `${primaryMess.name}, Central Kitchen Ramp`,
+          notes: "Freshly prepared lunch surplus in hot containers",
+          statusHistory: [
+            { status: "AVAILABLE", timestamp: new Date(now - 36e5), note: "Listing created and available for claims" }
+          ]
+        },
+        {
+          messId: secondaryMess._id,
+          title: "Dinner Surplus: Roti & Mixed Veg",
+          foodCategory: "COOKED_MEALS",
+          mealType: "DINNER",
+          quantityKg: 55,
+          portionsEstimate: 120,
+          preparedAt: new Date(now - 72e5),
+          collectBy: new Date(now + 108e5),
+          dietaryTags: ["VEG"],
+          status: "RESERVED",
+          claimedByNgoId: primaryNgo._id,
+          claimedAt: new Date(now - 18e5),
+          pickupAssignedAt: new Date(now - 18e5),
+          pickupLocation: secondaryMess.location,
+          pickupAddress: `${secondaryMess.name}, Gate 2`,
+          statusHistory: [
+            { status: "AVAILABLE", timestamp: new Date(now - 72e5), note: "Listing created and available for claims" },
+            { status: "RESERVED", timestamp: new Date(now - 18e5), note: `Claimed by ${primaryNgo.name}` }
+          ]
+        }
+      ];
+      await Listing.insertMany(listings);
+      console.log(`[Bootstrap] Inserted ${listings.length} listings.`);
+    }
+    if (mealLogCount === 0) {
+      const otherMesses = await Mess.find({ _id: { $ne: primaryMess._id } }).sort({ name: 1 }).limit(4).lean();
+      const messesForLogs = [primaryMess, ...otherMesses];
+      const sampleLogs = [];
+      const mealTypes = ["BREAKFAST", "LUNCH", "SNACKS", "DINNER"];
+      const foodCats = [
+        "RICE_GRAINS",
+        "CURRY_DAL",
+        "ROTI_BREAD",
+        "VEGETABLES",
+        "DESSERT_SNACK"
+      ];
+      for (let day = 0; day < 7; day++) {
+        const date = new Date(Date.now() - day * 864e5);
+        for (const m of messesForLogs) {
+          for (const mt of mealTypes) {
+            const leftoverKg = 15;
+            sampleLogs.push({
+              messId: m._id,
+              date,
+              mealType: mt,
+              foodCategory: foodCats[Math.floor(Math.random() * foodCats.length)],
+              plannedAttendance: 500,
+              actualAttendance: 460 + Math.floor(Math.random() * 50),
+              preparedKg: 120,
+              servedKg: 105,
+              leftoverKg,
+              donatedKg: 12,
+              costOfLeftoverRs: leftoverKg * 60,
+              isHoliday: day % 6 === 0,
+              isExamWeek: false,
+              dayOfWeek: date.getDay()
+            });
+          }
+        }
+      }
+      await MealLog.insertMany(sampleLogs);
+      console.log(`[Bootstrap] Inserted ${sampleLogs.length} meal logs.`);
+    }
+    console.log("[Bootstrap] Demo data seeding complete.");
   } catch (err) {
     console.error("[Bootstrap] Auto-seeding error (non-fatal):", err);
   }
 }
 
+// server/src/models/AuditLog.ts
+var import_mongoose8 = __toESM(require_mongoose2(), 1);
+var auditLogSchema = new import_mongoose8.Schema(
+  {
+    action: { type: String, required: true, index: true },
+    entityType: { type: String, required: true, index: true },
+    entityId: { type: String, required: true, index: true },
+    userId: { type: import_mongoose8.Schema.Types.ObjectId, ref: "User" },
+    ipAddress: { type: String },
+    details: { type: import_mongoose8.Schema.Types.Mixed, default: {} },
+    createdAt: { type: Date, default: Date.now, required: true }
+  },
+  {
+    timestamps: false
+  }
+);
+auditLogSchema.index({ createdAt: 1 }, { expireAfterSeconds: 90 * 86400 });
+auditLogSchema.index({ action: 1, createdAt: -1 });
+var AuditLog = import_mongoose8.default.model("AuditLog", auditLogSchema);
+
+// server/src/models/BenchmarkResult.ts
+var import_mongoose9 = __toESM(require_mongoose2(), 1);
+var benchmarkResultSchema = new import_mongoose9.Schema(
+  {
+    queryId: { type: String, required: true, index: true },
+    queryName: { type: String, required: true },
+    description: { type: String, required: true },
+    datasetScale: { type: String, required: true, enum: ["10k", "100k", "1M", "5M"], index: true },
+    recordCount: { type: Number, required: true },
+    useIndex: { type: Boolean, required: true, index: true },
+    executionTimeMs: { type: Number, required: true },
+    docsExamined: { type: Number, required: true },
+    docsReturned: { type: Number, required: true },
+    collectionScanned: { type: Boolean, required: true },
+    indexesUsed: [{ type: String }],
+    throughputRps: { type: Number },
+    memoryUsageMb: { type: Number },
+    runAt: { type: Date, default: Date.now, index: true }
+  },
+  {
+    timestamps: true
+  }
+);
+benchmarkResultSchema.index({ queryId: 1, datasetScale: 1, useIndex: 1 });
+var BenchmarkResult = import_mongoose9.default.model("BenchmarkResult", benchmarkResultSchema);
+
+// server/src/models/ModelRegistry.ts
+var import_mongoose10 = __toESM(require_mongoose2(), 1);
+var modelRegistrySchema = new import_mongoose10.Schema(
+  {
+    version: { type: String, required: true, unique: true },
+    algorithm: {
+      type: String,
+      required: true,
+      enum: ["RandomForestRegressor", "GradientBoostingRegressor", "LinearRegression"]
+    },
+    trainingWindow: {
+      startDate: { type: Date, required: true },
+      endDate: { type: Date, required: true },
+      samplesCount: { type: Number, required: true }
+    },
+    metrics: {
+      mae: { type: Number, required: true },
+      rmse: { type: Number, required: true },
+      r2: { type: Number, required: true },
+      baselineMae: { type: Number, default: 0 },
+      driftPercentage: { type: Number, default: 0 },
+      driftFlag: { type: Boolean, default: false }
+    },
+    featureImportance: { type: import_mongoose10.Schema.Types.Mixed, default: {} },
+    hyperparameters: { type: import_mongoose10.Schema.Types.Mixed, default: {} },
+    status: {
+      type: String,
+      required: true,
+      enum: ["ACTIVE", "CANDIDATE", "ARCHIVED"],
+      default: "ACTIVE",
+      index: true
+    },
+    trainedAt: { type: Date, default: Date.now },
+    trainedBy: { type: String, default: "SYSTEM" }
+  },
+  {
+    timestamps: true
+  }
+);
+modelRegistrySchema.index({ status: 1, trainedAt: -1 });
+var ModelRegistry = import_mongoose10.default.model("ModelRegistry", modelRegistrySchema);
+
+// server/src/models/MealSummary.ts
+var import_mongoose11 = __toESM(require_mongoose2(), 1);
+var mealSummarySchema = new import_mongoose11.Schema(
+  {
+    messId: { type: import_mongoose11.Schema.Types.ObjectId, ref: "Mess", required: true, index: true },
+    periodMonth: { type: String, required: true, index: true },
+    mealType: { type: String, required: true },
+    foodCategory: { type: String, required: true },
+    totalPreparedKg: { type: Number, required: true },
+    totalServedKg: { type: Number, required: true },
+    totalLeftoverKg: { type: Number, required: true },
+    totalDonatedKg: { type: Number, required: true },
+    totalCostSavedRs: { type: Number, required: true },
+    recordsCount: { type: Number, required: true },
+    archivedAt: { type: Date, default: Date.now }
+  },
+  {
+    timestamps: true
+  }
+);
+mealSummarySchema.index({ periodMonth: 1, messId: 1 });
+mealSummarySchema.index({ messId: 1, periodMonth: -1 });
+var MealSummary = import_mongoose11.default.model("MealSummary", mealSummarySchema);
+
 // server/src/db.ts
-var isConnecting = false;
+var connectionPromise = null;
+async function ensureIndexes() {
+  const models = Object.values(import_mongoose12.default.models);
+  const results = await Promise.allSettled(models.map((model) => model.createIndexes()));
+  results.forEach((result, i) => {
+    if (result.status === "rejected") {
+      console.error(
+        `[Database] Index creation failed for ${models[i].modelName}:`,
+        result.reason?.message || result.reason
+      );
+    }
+  });
+}
 async function connectDB(uri) {
-  if (import_mongoose8.default.connection.readyState >= 1) {
+  if (import_mongoose12.default.connection.readyState === 1) {
     return;
   }
-  if (isConnecting) {
-    return;
+  if (connectionPromise) {
+    return connectionPromise;
   }
-  isConnecting = true;
   const targetUri = uri || config.mongodbUri;
-  try {
-    await import_mongoose8.default.connect(targetUri, {
-      serverSelectionTimeoutMS: 5e3,
-      connectTimeoutMS: 5e3,
-      socketTimeoutMS: 8e3,
-      maxPoolSize: 5,
-      autoIndex: false,
-      bufferCommands: false
-    });
-    console.log(`[Database] MongoDB connected successfully to ${targetUri.replace(/:[^:]*@/, ":****@")}`);
-    autoBootstrapIfEmpty().catch((err) => console.error("[Bootstrap Background Error]:", err));
-  } catch (error) {
-    console.error("[Database] Connection failed:", error);
-  } finally {
-    isConnecting = false;
-  }
+  connectionPromise = (async () => {
+    try {
+      if (import_mongoose12.default.connection.readyState === 2) {
+        await import_mongoose12.default.connection.asPromise();
+      } else {
+        await import_mongoose12.default.connect(targetUri, {
+          serverSelectionTimeoutMS: 5e3,
+          connectTimeoutMS: 5e3,
+          socketTimeoutMS: 8e3,
+          maxPoolSize: 5,
+          autoIndex: false,
+          bufferCommands: false
+        });
+      }
+      console.log(`[Database] MongoDB connected successfully to ${targetUri.replace(/:[^:]*@/, ":****@")}`);
+      await ensureIndexes();
+      autoBootstrapIfEmpty().catch((err) => console.error("[Bootstrap Background Error]:", err));
+    } catch (error) {
+      console.error("[Database] Connection failed:", error?.message || error);
+    } finally {
+      connectionPromise = null;
+    }
+  })();
+  return connectionPromise;
 }
 
 // server/src/middleware/errorHandler.ts
@@ -96892,9 +97051,26 @@ var AppError = class extends Error {
   }
 };
 function errorHandler(err, req, res, next) {
-  const statusCode = err.statusCode || 500;
-  const code = err.code || "INTERNAL_ERROR";
-  const message = err.message || "An unexpected error occurred";
+  let statusCode = err.statusCode || err.status || 500;
+  let code = typeof err.code === "string" ? err.code : "INTERNAL_ERROR";
+  let message = err.message || "An unexpected error occurred";
+  if (err.name === "BSONError") {
+    statusCode = 400;
+    code = "INVALID_ID";
+    message = "Invalid id in request";
+  } else if (err.name === "CastError") {
+    statusCode = 400;
+    code = "INVALID_ID";
+    message = `Invalid value for '${err.path}'`;
+  } else if (err.name === "ValidationError") {
+    statusCode = 400;
+    code = "VALIDATION_ERROR";
+  } else if (err.type === "entity.parse.failed") {
+    code = "INVALID_JSON";
+    message = "Request body is not valid JSON";
+  } else if (err.name === "MongoServerError" || err.name === "MongoNetworkError" || err.name === "MongooseServerSelectionError") {
+    code = "DATABASE_ERROR";
+  }
   if (process.env.NODE_ENV !== "test" && statusCode >= 500) {
     console.error(`[Error] ${req.method} ${req.path} - ${statusCode} ${code}:`, err);
   }
@@ -101750,27 +101926,27 @@ var import_jsonwebtoken = __toESM(require_jsonwebtoken(), 1);
 function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    req.user = {
-      userId: "6adcd57184b8ffbca383bf2e",
-      email: "platform.admin@foodbridge.org",
-      role: "PLATFORM_ADMIN",
-      name: "Aditi Rao (Platform Admin)"
-    };
-    return next();
+    return next(new AppError("Authentication required. Please log in.", 401, "UNAUTHORIZED"));
   }
-  const token = authHeader.split(" ")[1];
+  const token = authHeader.slice("Bearer ".length).trim();
+  let secret;
   try {
-    const decoded = import_jsonwebtoken.default.verify(token, config.jwtSecret);
+    secret = getJwtSecret();
+  } catch (err) {
+    return next(err);
+  }
+  try {
+    const decoded = import_jsonwebtoken.default.verify(token, secret, { algorithms: ["HS256"] });
+    if (!decoded?.userId || !decoded?.role) {
+      return next(new AppError("Invalid authentication token.", 401, "INVALID_TOKEN"));
+    }
     req.user = decoded;
     next();
   } catch (err) {
-    req.user = {
-      userId: "6adcd57184b8ffbca383bf2e",
-      email: "platform.admin@foodbridge.org",
-      role: "PLATFORM_ADMIN",
-      name: "Aditi Rao (Platform Admin)"
-    };
-    next();
+    if (err.name === "TokenExpiredError") {
+      return next(new AppError("Your session has expired. Please log in again.", 401, "TOKEN_EXPIRED"));
+    }
+    return next(new AppError("Invalid authentication token.", 401, "INVALID_TOKEN"));
   }
 }
 function authorize(allowedRoles) {
@@ -101788,6 +101964,25 @@ function authorize(allowedRoles) {
       );
     }
     next();
+  };
+}
+function assertOrgAccess(user, orgId) {
+  if (!user) {
+    throw new AppError("Unauthorized. No user identity.", 401, "UNAUTHORIZED");
+  }
+  if (user.role === "PLATFORM_ADMIN") return;
+  if (!orgId || !user.organizationId || String(orgId) !== String(user.organizationId)) {
+    throw new AppError("Forbidden: you can only access your own organization.", 403, "FORBIDDEN");
+  }
+}
+function requireOrgAccessParam(param = "id") {
+  return (req, res, next) => {
+    try {
+      assertOrgAccess(req.user, req.params[param]);
+      next();
+    } catch (err) {
+      next(err);
+    }
   };
 }
 
@@ -101838,7 +102033,8 @@ authRouter.post(
         name: user.name,
         organizationId: user.organizationId?.toString()
       };
-      const token = import_jsonwebtoken2.default.sign(tokenPayload, config.jwtSecret, {
+      const token = import_jsonwebtoken2.default.sign(tokenPayload, getJwtSecret(), {
+        algorithm: "HS256",
         expiresIn: config.jwtExpiresIn || "7d"
       });
       res.json({
@@ -101894,7 +102090,7 @@ authRouter.get("/me", authenticate, async (req, res, next) => {
 var import_express2 = __toESM(require_express2(), 1);
 
 // server/src/services/listingService.ts
-var import_mongoose9 = __toESM(require_mongoose2(), 1);
+var import_mongoose13 = __toESM(require_mongoose2(), 1);
 
 // server/src/services/matchingEngine.ts
 function calculateScoreBreakdown(distanceKm, serviceRadiusKm, vehicleCapacityKg, quantityKg, collectBy, ngoReliability, referenceTime = /* @__PURE__ */ new Date()) {
@@ -102038,7 +102234,7 @@ async function createListing(data) {
       {
         status: "AVAILABLE",
         timestamp: now,
-        updatedBy: data.userId ? new import_mongoose9.Types.ObjectId(data.userId) : void 0,
+        updatedBy: data.userId ? new import_mongoose13.Types.ObjectId(data.userId) : void 0,
         note: "Listing created and available for claims"
       }
     ]
@@ -102068,7 +102264,7 @@ async function claimListingAtomic(listingId, ngoId, userId, note) {
         statusHistory: {
           status: "RESERVED",
           timestamp: now,
-          updatedBy: userId ? new import_mongoose9.Types.ObjectId(userId) : void 0,
+          updatedBy: userId ? new import_mongoose13.Types.ObjectId(userId) : void 0,
           note: note || `Claimed by ${ngo.name}`
         }
       }
@@ -102122,7 +102318,7 @@ async function transitionListingStatus(listingId, targetStatus, userId, note) {
   listing.statusHistory.push({
     status: targetStatus,
     timestamp: now,
-    updatedBy: userId ? new import_mongoose9.Types.ObjectId(userId) : void 0,
+    updatedBy: userId ? new import_mongoose13.Types.ObjectId(userId) : void 0,
     note: note || `Transitioned to ${targetStatus}`
   });
   return await listing.save();
@@ -102150,6 +102346,7 @@ listingRouter.post(
   validate(createListingSchema),
   async (req, res, next) => {
     try {
+      assertOrgAccess(req.user, req.body.messId);
       const listing = await createListing({
         ...req.body,
         preparedAt: new Date(req.body.preparedAt),
@@ -102180,15 +102377,29 @@ listingRouter.get("/", authenticate, async (req, res, next) => {
     } = req.query;
     const filter = {};
     if (status && status !== "ALL") filter.status = status;
+    const user = req.user;
     if (messId) filter.messId = messId;
     if (claimedByNgoId) filter.claimedByNgoId = claimedByNgoId;
     if (foodCategory && foodCategory !== "ALL") filter.foodCategory = foodCategory;
     if (mealType && mealType !== "ALL") filter.mealType = mealType;
+    if (user.role === "MESS_ADMIN") {
+      filter.messId = user.organizationId || "000000000000000000000000";
+    } else if (user.role === "NGO_REP") {
+      const ownNgo = user.organizationId || "000000000000000000000000";
+      if (claimedByNgoId && String(claimedByNgoId) !== String(ownNgo)) {
+        return next(new AppError("Forbidden: you can only view your own pickups.", 403, "FORBIDDEN"));
+      }
+      if (!claimedByNgoId) {
+        filter.$or = [{ status: "AVAILABLE" }, { claimedByNgoId: ownNgo }];
+      }
+    }
+    const sortable = ["createdAt", "updatedAt", "collectBy", "preparedAt", "quantityKg", "status"];
+    const sortField = sortable.includes(sortBy) ? sortBy : "createdAt";
     const pageNum = Math.max(1, parseInt(page, 10));
     const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10)));
     const skip = (pageNum - 1) * limitNum;
     const sortDir = sortOrder === "asc" ? 1 : -1;
-    const sortObj = { [sortBy]: sortDir };
+    const sortObj = { [sortField]: sortDir };
     const [items, total] = await Promise.all([
       Listing.find(filter).populate("messId", "name campus address location phone").populate("claimedByNgoId", "name phone location serviceRadiusKm").sort(sortObj).skip(skip).limit(limitNum).lean(),
       Listing.countDocuments(filter)
@@ -102215,6 +102426,14 @@ listingRouter.get("/:id", authenticate, async (req, res, next) => {
     if (!listing) {
       return next(new AppError("Listing not found", 404, "NOT_FOUND"));
     }
+    const user = req.user;
+    const messRef = listing.messId;
+    const ngoRef = listing.claimedByNgoId;
+    if (user.role === "MESS_ADMIN") {
+      assertOrgAccess(user, messRef?._id ?? messRef);
+    } else if (user.role === "NGO_REP" && listing.status !== "AVAILABLE") {
+      assertOrgAccess(user, ngoRef?._id ?? ngoRef);
+    }
     res.json({
       success: true,
       data: listing
@@ -102229,7 +102448,7 @@ listingRouter.post(
   authorize(["NGO_REP", "PLATFORM_ADMIN"]),
   async (req, res, next) => {
     try {
-      const ngoId = req.body.ngoId || req.user.organizationId;
+      const ngoId = req.user.role === "PLATFORM_ADMIN" ? req.body.ngoId || req.user.organizationId : req.user.organizationId;
       if (!ngoId) {
         return next(new AppError("NGO identification missing", 400, "NGO_ID_REQUIRED"));
       }
@@ -102258,6 +102477,16 @@ listingRouter.post(
       if (!status) {
         return next(new AppError("Target status is required", 400, "STATUS_REQUIRED"));
       }
+      const existing = await Listing.findById(req.params.id).select("messId claimedByNgoId").lean();
+      if (!existing) {
+        return next(new AppError("Listing not found", 404, "NOT_FOUND"));
+      }
+      const user = req.user;
+      if (user.role === "NGO_REP") {
+        assertOrgAccess(user, existing.claimedByNgoId?.toString());
+      } else if (user.role === "MESS_ADMIN") {
+        assertOrgAccess(user, existing.messId?.toString());
+      }
       const listing = await transitionListingStatus(
         req.params.id,
         status,
@@ -102277,6 +102506,7 @@ listingRouter.post(
 listingRouter.post(
   "/:id/match-candidates",
   authenticate,
+  authorize(["PLATFORM_ADMIN"]),
   async (req, res, next) => {
     try {
       const listing = await Listing.findById(req.params.id).lean();
@@ -102352,6 +102582,8 @@ messRouter.get("/:id", authenticate, async (req, res, next) => {
 messRouter.post(
   "/:id/meal-logs",
   authenticate,
+  authorize(["MESS_ADMIN", "PLATFORM_ADMIN"]),
+  requireOrgAccessParam("id"),
   validate(createMealLogSchema),
   async (req, res, next) => {
     try {
@@ -102406,10 +102638,10 @@ messRouter.post(
     }
   }
 );
-messRouter.get("/:id/meal-logs", authenticate, async (req, res, next) => {
+messRouter.get("/:id/meal-logs", authenticate, authorize(["MESS_ADMIN", "PLATFORM_ADMIN"]), requireOrgAccessParam("id"), async (req, res, next) => {
   try {
     const { limit = "30", page = "1", mealType, foodCategory, startDate, endDate } = req.query;
-    const filter = { messId: req.params.id };
+    const filter = req.params.id === "all" ? {} : { messId: req.params.id };
     if (mealType && mealType !== "ALL") filter.mealType = mealType;
     if (foodCategory && foodCategory !== "ALL") filter.foodCategory = foodCategory;
     if (startDate || endDate) {
@@ -102482,6 +102714,8 @@ ngoRouter.get("/:id", authenticate, async (req, res, next) => {
 ngoRouter.put(
   "/:id/settings",
   authenticate,
+  authorize(["NGO_REP", "PLATFORM_ADMIN"]),
+  requireOrgAccessParam("id"),
   validate(updateSettingsSchema),
   async (req, res, next) => {
     try {
@@ -102493,7 +102727,7 @@ ngoRouter.put(
     }
   }
 );
-ngoRouter.get("/:id/nearby-donations", authenticate, async (req, res, next) => {
+ngoRouter.get("/:id/nearby-donations", authenticate, authorize(["NGO_REP", "PLATFORM_ADMIN"]), requireOrgAccessParam("id"), async (req, res, next) => {
   try {
     const ngo = await Ngo.findById(req.params.id).lean();
     if (!ngo) return next(new AppError("NGO not found", 404, "NOT_FOUND"));
@@ -102533,52 +102767,6 @@ ngoRouter.get("/:id/nearby-donations", authenticate, async (req, res, next) => {
 
 // server/src/routes/admin.routes.ts
 var import_express5 = __toESM(require_express2(), 1);
-
-// server/src/models/MealSummary.ts
-var import_mongoose10 = __toESM(require_mongoose2(), 1);
-var mealSummarySchema = new import_mongoose10.Schema(
-  {
-    messId: { type: import_mongoose10.Schema.Types.ObjectId, ref: "Mess", required: true, index: true },
-    periodMonth: { type: String, required: true, index: true },
-    mealType: { type: String, required: true },
-    foodCategory: { type: String, required: true },
-    totalPreparedKg: { type: Number, required: true },
-    totalServedKg: { type: Number, required: true },
-    totalLeftoverKg: { type: Number, required: true },
-    totalDonatedKg: { type: Number, required: true },
-    totalCostSavedRs: { type: Number, required: true },
-    recordsCount: { type: Number, required: true },
-    archivedAt: { type: Date, default: Date.now }
-  },
-  {
-    timestamps: true
-  }
-);
-mealSummarySchema.index({ periodMonth: 1, messId: 1 });
-mealSummarySchema.index({ messId: 1, periodMonth: -1 });
-var MealSummary = import_mongoose10.default.model("MealSummary", mealSummarySchema);
-
-// server/src/models/AuditLog.ts
-var import_mongoose11 = __toESM(require_mongoose2(), 1);
-var auditLogSchema = new import_mongoose11.Schema(
-  {
-    action: { type: String, required: true, index: true },
-    entityType: { type: String, required: true, index: true },
-    entityId: { type: String, required: true, index: true },
-    userId: { type: import_mongoose11.Schema.Types.ObjectId, ref: "User" },
-    ipAddress: { type: String },
-    details: { type: import_mongoose11.Schema.Types.Mixed, default: {} },
-    createdAt: { type: Date, default: Date.now, required: true }
-  },
-  {
-    timestamps: false
-  }
-);
-auditLogSchema.index({ createdAt: 1 }, { expireAfterSeconds: 90 * 86400 });
-auditLogSchema.index({ action: 1, createdAt: -1 });
-var AuditLog = import_mongoose11.default.model("AuditLog", auditLogSchema);
-
-// server/src/routes/admin.routes.ts
 var adminRouter = (0, import_express5.Router)();
 var updateSettingsSchema2 = external_exports.object({
   weights: external_exports.object({
@@ -102594,7 +102782,7 @@ var updateSettingsSchema2 = external_exports.object({
   }).optional(),
   driftThresholdMae: external_exports.number().positive().optional()
 });
-adminRouter.get("/settings", authenticate, async (req, res, next) => {
+adminRouter.get("/settings", authenticate, authorize(["PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
     let setting = await SystemSetting.findOne({ key: "GLOBAL_CONFIG" }).lean();
     if (!setting) {
@@ -102637,7 +102825,7 @@ adminRouter.put(
     }
   }
 );
-adminRouter.get("/anomalies", authenticate, async (req, res, next) => {
+adminRouter.get("/anomalies", authenticate, authorize(["PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
     const { limit = "50", page = "1" } = req.query;
     const pageNum = Math.max(1, parseInt(page, 10));
@@ -102721,7 +102909,7 @@ adminRouter.post("/archive", authenticate, authorize(["PLATFORM_ADMIN"]), async 
     next(err);
   }
 });
-adminRouter.get("/lifecycle-status", authenticate, async (req, res, next) => {
+adminRouter.get("/lifecycle-status", authenticate, authorize(["PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
     const [rawAuditLogsCount, archivedRollupsCount, totalMealLogsCount] = await Promise.all([
       AuditLog.countDocuments(),
@@ -102748,7 +102936,7 @@ adminRouter.get("/lifecycle-status", authenticate, async (req, res, next) => {
 var import_express6 = __toESM(require_express2(), 1);
 
 // server/src/services/analyticsPipelines.ts
-var import_mongoose12 = __toESM(require_mongoose2(), 1);
+var import_mongoose14 = __toESM(require_mongoose2(), 1);
 async function runPipelineWithInspection(model, pipeline) {
   const startTime = Date.now();
   let docsExamined = 0;
@@ -102795,7 +102983,7 @@ function buildMealLogMatch(filter) {
     if (filter.endDate) match.date.$lte = new Date(filter.endDate);
   }
   if (filter.messId && filter.messId !== "ALL") {
-    match.messId = new import_mongoose12.default.Types.ObjectId(filter.messId);
+    match.messId = new import_mongoose14.default.Types.ObjectId(filter.messId);
   }
   if (filter.mealType && filter.mealType !== "ALL") {
     match.mealType = filter.mealType;
@@ -102813,10 +103001,10 @@ function buildListingMatch(filter) {
     if (filter.endDate) match.createdAt.$lte = new Date(filter.endDate);
   }
   if (filter.messId && filter.messId !== "ALL") {
-    match.messId = new import_mongoose12.default.Types.ObjectId(filter.messId);
+    match.messId = new import_mongoose14.default.Types.ObjectId(filter.messId);
   }
   if (filter.ngoId && filter.ngoId !== "ALL") {
-    match.claimedByNgoId = new import_mongoose12.default.Types.ObjectId(filter.ngoId);
+    match.claimedByNgoId = new import_mongoose14.default.Types.ObjectId(filter.ngoId);
   }
   if (filter.mealType && filter.mealType !== "ALL") {
     match.mealType = filter.mealType;
@@ -103241,7 +103429,7 @@ async function getGeospatialAnalytics() {
 // server/src/routes/analytics.routes.ts
 var analyticsRouter = (0, import_express6.Router)();
 function extractFilters(req) {
-  return {
+  const filters = {
     startDate: req.query.startDate,
     endDate: req.query.endDate,
     messId: req.query.messId,
@@ -103249,8 +103437,14 @@ function extractFilters(req) {
     mealType: req.query.mealType,
     foodCategory: req.query.foodCategory
   };
+  if (req.user?.role === "MESS_ADMIN") {
+    filters.messId = req.user.organizationId || "000000000000000000000000";
+  }
+  return filters;
 }
-analyticsRouter.get("/kpis", authenticate, async (req, res, next) => {
+var adminOnly = authorize(["PLATFORM_ADMIN"]);
+var messOrAdmin = authorize(["MESS_ADMIN", "PLATFORM_ADMIN"]);
+analyticsRouter.get("/kpis", authenticate, adminOnly, async (req, res, next) => {
   try {
     const filters = extractFilters(req);
     const result = await getOverviewImpactKPIs(filters);
@@ -103259,7 +103453,7 @@ analyticsRouter.get("/kpis", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-analyticsRouter.get("/trends", authenticate, async (req, res, next) => {
+analyticsRouter.get("/trends", authenticate, adminOnly, async (req, res, next) => {
   try {
     const filters = extractFilters(req);
     const result = await getDonatedVsRedistributedTrends(filters);
@@ -103268,7 +103462,7 @@ analyticsRouter.get("/trends", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-analyticsRouter.get("/waste-by-mess", authenticate, async (req, res, next) => {
+analyticsRouter.get("/waste-by-mess", authenticate, adminOnly, async (req, res, next) => {
   try {
     const filters = extractFilters(req);
     const result = await getWastePerMess(filters);
@@ -103277,7 +103471,7 @@ analyticsRouter.get("/waste-by-mess", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-analyticsRouter.get("/heatmap", authenticate, async (req, res, next) => {
+analyticsRouter.get("/heatmap", authenticate, messOrAdmin, async (req, res, next) => {
   try {
     const filters = extractFilters(req);
     const result = await getWeekdayMealTypeHeatmap(filters);
@@ -103286,7 +103480,7 @@ analyticsRouter.get("/heatmap", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-analyticsRouter.get("/pareto", authenticate, async (req, res, next) => {
+analyticsRouter.get("/pareto", authenticate, messOrAdmin, async (req, res, next) => {
   try {
     const filters = extractFilters(req);
     const result = await getCategoryParetoChart(filters);
@@ -103295,7 +103489,7 @@ analyticsRouter.get("/pareto", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-analyticsRouter.get("/ngo-performance", authenticate, async (req, res, next) => {
+analyticsRouter.get("/ngo-performance", authenticate, adminOnly, async (req, res, next) => {
   try {
     const filters = extractFilters(req);
     const result = await getNgoPerformanceMetrics(filters);
@@ -103304,7 +103498,7 @@ analyticsRouter.get("/ngo-performance", authenticate, async (req, res, next) => 
     next(err);
   }
 });
-analyticsRouter.get("/growth", authenticate, async (req, res, next) => {
+analyticsRouter.get("/growth", authenticate, adminOnly, async (req, res, next) => {
   try {
     const filters = extractFilters(req);
     const result = await getGrowthMetrics(filters);
@@ -103313,7 +103507,7 @@ analyticsRouter.get("/growth", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-analyticsRouter.get("/geospatial", authenticate, async (req, res, next) => {
+analyticsRouter.get("/geospatial", authenticate, adminOnly, async (req, res, next) => {
   try {
     const result = await getGeospatialAnalytics();
     res.json({ success: true, data: result });
@@ -103321,11 +103515,17 @@ analyticsRouter.get("/geospatial", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-analyticsRouter.post("/explain", authenticate, async (req, res, next) => {
+analyticsRouter.post("/explain", authenticate, adminOnly, async (req, res, next) => {
   try {
     const { pipeline } = req.body;
     if (!pipeline || !Array.isArray(pipeline)) {
       return res.status(400).json({ success: false, error: { message: "Invalid pipeline array" } });
+    }
+    const forbidden = ["$out", "$merge", "$lookup", "$unionWith", "$graphLookup"];
+    const used = pipeline.flatMap((stage) => stage && typeof stage === "object" ? Object.keys(stage) : []);
+    const bad = used.find((k) => forbidden.includes(k));
+    if (bad) {
+      return next(new AppError(`Stage ${bad} is not allowed in explain`, 400, "STAGE_NOT_ALLOWED"));
     }
     const startTime = Date.now();
     const explainPlan = await MealLog.collection.aggregate(pipeline).explain("executionStats");
@@ -103345,32 +103545,6 @@ analyticsRouter.post("/explain", authenticate, async (req, res, next) => {
 
 // server/src/routes/benchmark.routes.ts
 var import_express7 = __toESM(require_express2(), 1);
-
-// server/src/models/BenchmarkResult.ts
-var import_mongoose13 = __toESM(require_mongoose2(), 1);
-var benchmarkResultSchema = new import_mongoose13.Schema(
-  {
-    queryId: { type: String, required: true, index: true },
-    queryName: { type: String, required: true },
-    description: { type: String, required: true },
-    datasetScale: { type: String, required: true, enum: ["10k", "100k", "1M", "5M"], index: true },
-    recordCount: { type: Number, required: true },
-    useIndex: { type: Boolean, required: true, index: true },
-    executionTimeMs: { type: Number, required: true },
-    docsExamined: { type: Number, required: true },
-    docsReturned: { type: Number, required: true },
-    collectionScanned: { type: Boolean, required: true },
-    indexesUsed: [{ type: String }],
-    throughputRps: { type: Number },
-    memoryUsageMb: { type: Number },
-    runAt: { type: Date, default: Date.now, index: true }
-  },
-  {
-    timestamps: true
-  }
-);
-benchmarkResultSchema.index({ queryId: 1, datasetScale: 1, useIndex: 1 });
-var BenchmarkResult = import_mongoose13.default.model("BenchmarkResult", benchmarkResultSchema);
 
 // server/src/services/benchmarkService.ts
 var BENCHMARK_QUERIES = [
@@ -103677,7 +103851,7 @@ async function runBenchmarkSuite(scale = "100k") {
 
 // server/src/routes/benchmark.routes.ts
 var benchmarkRouter = (0, import_express7.Router)();
-benchmarkRouter.get("/", authenticate, async (req, res, next) => {
+benchmarkRouter.get("/", authenticate, authorize(["PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
     const { scale = "100k" } = req.query;
     let results = await BenchmarkResult.find({ datasetScale: scale }).sort({ runAt: -1 }).lean();
@@ -103708,7 +103882,7 @@ benchmarkRouter.get("/", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-benchmarkRouter.post("/run", authenticate, async (req, res, next) => {
+benchmarkRouter.post("/run", authenticate, authorize(["PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
     const scale = req.body.scale || "100k";
     const results = await runBenchmarkSuite(scale);
@@ -103724,55 +103898,13 @@ benchmarkRouter.post("/run", authenticate, async (req, res, next) => {
 
 // server/src/routes/forecast.routes.ts
 var import_express8 = __toESM(require_express2(), 1);
-
-// server/src/models/ModelRegistry.ts
-var import_mongoose14 = __toESM(require_mongoose2(), 1);
-var modelRegistrySchema = new import_mongoose14.Schema(
-  {
-    version: { type: String, required: true, unique: true },
-    algorithm: {
-      type: String,
-      required: true,
-      enum: ["RandomForestRegressor", "GradientBoostingRegressor", "LinearRegression"]
-    },
-    trainingWindow: {
-      startDate: { type: Date, required: true },
-      endDate: { type: Date, required: true },
-      samplesCount: { type: Number, required: true }
-    },
-    metrics: {
-      mae: { type: Number, required: true },
-      rmse: { type: Number, required: true },
-      r2: { type: Number, required: true },
-      baselineMae: { type: Number, default: 0 },
-      driftPercentage: { type: Number, default: 0 },
-      driftFlag: { type: Boolean, default: false }
-    },
-    featureImportance: { type: import_mongoose14.Schema.Types.Mixed, default: {} },
-    hyperparameters: { type: import_mongoose14.Schema.Types.Mixed, default: {} },
-    status: {
-      type: String,
-      required: true,
-      enum: ["ACTIVE", "CANDIDATE", "ARCHIVED"],
-      default: "ACTIVE",
-      index: true
-    },
-    trainedAt: { type: Date, default: Date.now },
-    trainedBy: { type: String, default: "SYSTEM" }
-  },
-  {
-    timestamps: true
-  }
-);
-modelRegistrySchema.index({ status: 1, trainedAt: -1 });
-var ModelRegistry = import_mongoose14.default.model("ModelRegistry", modelRegistrySchema);
-
-// server/src/routes/forecast.routes.ts
 var forecastRouter = (0, import_express8.Router)();
 async function callMLService(endpoint, options = {}) {
   const url = `${config.mlServiceUrl}${endpoint}`;
   try {
     const res = await fetch(url, {
+      // Don't let an unreachable ML host stall the request (serverless timeouts).
+      signal: AbortSignal.timeout(4e3),
       ...options,
       headers: {
         "Content-Type": "application/json",
@@ -103819,7 +103951,7 @@ var FALLBACK_METRICS = {
   residualsDistribution: [-3.2, -2.1, -1.4, -0.8, -0.2, 0.1, 0.4, 0.9, 1.5, 2.3, 3.1],
   baselineMae: 1.64
 };
-forecastRouter.get("/metrics", authenticate, async (req, res, next) => {
+forecastRouter.get("/metrics", authenticate, authorize(["PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
     const mlResponse = await callMLService("/metrics");
     if (mlResponse) {
@@ -103830,7 +103962,7 @@ forecastRouter.get("/metrics", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-forecastRouter.post("/predict", authenticate, async (req, res, next) => {
+forecastRouter.post("/predict", authenticate, authorize(["MESS_ADMIN", "PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
     const mlResponse = await callMLService("/predict", {
       method: "POST",
@@ -103859,7 +103991,7 @@ forecastRouter.post("/predict", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-forecastRouter.post("/what-if", authenticate, async (req, res, next) => {
+forecastRouter.post("/what-if", authenticate, authorize(["MESS_ADMIN", "PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
     const mlResponse = await callMLService("/what-if", {
       method: "POST",
@@ -103886,7 +104018,7 @@ forecastRouter.post("/what-if", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-forecastRouter.get("/drift", authenticate, async (req, res, next) => {
+forecastRouter.get("/drift", authenticate, authorize(["PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
     const mlResponse = await callMLService("/drift");
     if (mlResponse) {
@@ -103909,7 +104041,7 @@ forecastRouter.get("/drift", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-forecastRouter.post("/retrain", authenticate, async (req, res, next) => {
+forecastRouter.post("/retrain", authenticate, authorize(["PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
     const recentLogs = await MealLog.find({ leftoverKg: { $gte: 0 } }).sort({ date: -1 }).limit(1e3).lean();
     const formattedRecords = recentLogs.map((l) => ({
@@ -103964,7 +104096,7 @@ forecastRouter.post("/retrain", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-forecastRouter.get("/model-registry", authenticate, async (req, res, next) => {
+forecastRouter.get("/model-registry", authenticate, authorize(["PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
     let registry = await ModelRegistry.find({}).sort({ trainedAt: -1 }).lean();
     if (registry.length === 0) {
@@ -104189,7 +104321,7 @@ async function processBulkImport(rows) {
 
 // server/src/routes/quality.routes.ts
 var qualityRouter = (0, import_express9.Router)();
-qualityRouter.get("/", authenticate, async (req, res, next) => {
+qualityRouter.get("/", authenticate, authorize(["PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
     const result = await runDataQualityScan();
     res.json({ success: true, data: result });
@@ -104206,6 +104338,15 @@ qualityRouter.post(
       const { rows } = req.body;
       if (!rows || !Array.isArray(rows)) {
         return res.status(400).json({ success: false, error: { message: 'Payload must contain a "rows" array.' } });
+      }
+      if (req.user.role === "MESS_ADMIN") {
+        const foreign = rows.find((r) => String(r?.messId) !== String(req.user.organizationId));
+        if (foreign || !req.user.organizationId) {
+          return res.status(403).json({
+            success: false,
+            error: { code: "FORBIDDEN", message: "You can only import meal logs for your own mess." }
+          });
+        }
       }
       const report = await processBulkImport(rows);
       res.json({
@@ -104327,7 +104468,7 @@ async function generateMonthlyPDFReport(res, monthYear) {
 
 // server/src/routes/reports.routes.ts
 var reportsRouter = (0, import_express10.Router)();
-reportsRouter.get("/monthly-pdf", authenticate, async (req, res, next) => {
+reportsRouter.get("/monthly-pdf", authenticate, authorize(["PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
     const monthYear = req.query.monthYear;
     res.setHeader("Content-Type", "application/pdf");
@@ -104340,11 +104481,12 @@ reportsRouter.get("/monthly-pdf", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-reportsRouter.get("/export-meals-csv", authenticate, async (req, res, next) => {
+reportsRouter.get("/export-meals-csv", authenticate, authorize(["MESS_ADMIN", "PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
     const { messId, startDate, endDate } = req.query;
     const filter = {};
     if (messId && messId !== "ALL") filter.messId = messId;
+    if (req.user.role === "MESS_ADMIN") filter.messId = req.user.organizationId || "000000000000000000000000";
     if (startDate || endDate) {
       filter.date = {};
       if (startDate) filter.date.$gte = new Date(startDate);
@@ -104394,9 +104536,10 @@ reportsRouter.get("/export-meals-csv", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-reportsRouter.get("/export-listings-csv", authenticate, async (req, res, next) => {
+reportsRouter.get("/export-listings-csv", authenticate, authorize(["MESS_ADMIN", "PLATFORM_ADMIN"]), async (req, res, next) => {
   try {
-    const listings = await Listing.find({}).populate("messId", "name").populate("claimedByNgoId", "name").sort({ createdAt: -1 }).limit(5e3).lean();
+    const listingFilter = req.user.role === "MESS_ADMIN" ? { messId: req.user.organizationId || "000000000000000000000000" } : {};
+    const listings = await Listing.find(listingFilter).populate("messId", "name").populate("claimedByNgoId", "name").sort({ createdAt: -1 }).limit(5e3).lean();
     res.setHeader("Content-Type", "text/csv");
     res.setHeader("Content-Disposition", 'attachment; filename="foodbridge_listings.csv"');
     const headers = [
@@ -104436,7 +104579,14 @@ reportsRouter.get("/export-listings-csv", authenticate, async (req, res, next) =
 // server/src/index.ts
 var app = (0, import_express11.default)();
 app.use(helmet());
-app.use((0, import_cors.default)({ origin: "*" }));
+app.use(
+  (0, import_cors.default)({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      callback(null, config.corsOrigins.includes(origin.replace(/\/+$/, "")));
+    }
+  })
+);
 app.use(import_express11.default.json({ limit: "10mb" }));
 app.use(import_express11.default.urlencoded({ extended: true, limit: "10mb" }));
 if (process.env.NODE_ENV !== "test") {
@@ -104457,14 +104607,14 @@ app.use(async (req, res, next) => {
   if (req.path === "/api/health" || req.path === "/health") {
     return next();
   }
-  if (import_mongoose16.default.connection.readyState < 1) {
+  if (import_mongoose16.default.connection.readyState !== 1) {
     try {
       await connectDB();
     } catch (err) {
       console.error("[Database Middleware] Connection error:", err);
     }
   }
-  if (import_mongoose16.default.connection.readyState < 1) {
+  if (import_mongoose16.default.connection.readyState !== 1) {
     return res.status(503).json({
       success: false,
       error: {

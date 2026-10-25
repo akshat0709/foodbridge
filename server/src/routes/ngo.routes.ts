@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { Ngo } from '../models/Ngo.js';
 import { Listing } from '../models/Listing.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, authorize, requireOrgAccessParam } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 import { AppError } from '../middleware/errorHandler.js';
 
@@ -56,6 +56,8 @@ ngoRouter.get('/:id', authenticate, async (req: Request, res: Response, next: Ne
 ngoRouter.put(
   '/:id/settings',
   authenticate,
+  authorize(['NGO_REP', 'PLATFORM_ADMIN']),
+  requireOrgAccessParam('id'),
   validate(updateSettingsSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -68,7 +70,7 @@ ngoRouter.put(
   }
 );
 
-ngoRouter.get('/:id/nearby-donations', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+ngoRouter.get('/:id/nearby-donations', authenticate, authorize(['NGO_REP', 'PLATFORM_ADMIN']), requireOrgAccessParam('id'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const ngo = await Ngo.findById(req.params.id).lean();
     if (!ngo) return next(new AppError('NGO not found', 404, 'NOT_FOUND'));

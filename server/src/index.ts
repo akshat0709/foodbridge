@@ -22,7 +22,16 @@ export const app = express();
 
 // Security and utility middlewares
 app.use(helmet());
-app.use(cors({ origin: '*' }));
+// Only listed origins get CORS headers. Same-origin calls (Vite proxy locally,
+// Vercel rewrite in production) don't depend on CORS and keep working.
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      callback(null, config.corsOrigins.includes(origin.replace(/\/+$/, '')));
+    },
+  })
+);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -48,14 +57,17 @@ app.use(async (req, res, next) => {
   if (req.path === '/api/health' || req.path === '/health') {
     return next();
   }
-  if (mongoose.connection.readyState < 1) {
+  // readyState: 0 disconnected, 1 connected, 2 connecting, 3 disconnecting.
+  // Anything other than 1 must wait: with bufferCommands disabled, a query issued
+  // while still "connecting" throws instead of queuing.
+  if (mongoose.connection.readyState !== 1) {
     try {
       await connectDB();
     } catch (err) {
       console.error('[Database Middleware] Connection error:', err);
     }
   }
-  if (mongoose.connection.readyState < 1) {
+  if (mongoose.connection.readyState !== 1) {
     return res.status(503).json({
       success: false,
       error: {
