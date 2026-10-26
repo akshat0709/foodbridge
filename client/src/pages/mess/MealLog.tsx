@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PageHero } from '../../components/PageHero';
 import { useAuth } from '../../context/AuthContext';
+import { toLocalInputValue } from '../../utils/datetime';
 import { apiRequest, exportCsv } from '../../api/client';
 import { DataTable, Column } from '../../components/DataTable';
 import { UploadCloud, Plus, AlertTriangle, CheckCircle, FileText, X } from 'lucide-react';
@@ -17,7 +18,7 @@ export const MealLog: React.FC = () => {
   // Modal for new single meal entry
   const [showAddModal, setShowAddModal] = useState(false);
   const [newLog, setNewLog] = useState({
-    date: new Date().toISOString().slice(0, 16),
+    date: toLocalInputValue(),
     mealType: 'LUNCH',
     foodCategory: 'RICE_GRAINS',
     plannedAttendance: 620,

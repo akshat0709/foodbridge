@@ -23,6 +23,12 @@ const createListingSchema = z.object({
   dietaryTags: z.array(z.string()).optional(),
   pickupAddress: z.string().optional(),
   notes: z.string().optional(),
+}).refine(d => new Date(d.collectBy) > new Date(d.preparedAt), {
+  message: 'collectBy must be after preparedAt',
+  path: ['collectBy'],
+}).refine(d => new Date(d.collectBy).getTime() > Date.now(), {
+  message: 'collectBy is already in the past',
+  path: ['collectBy'],
 });
 
 // Mess Admin creates listing

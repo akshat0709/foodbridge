@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PageHero } from '../../components/PageHero';
 import { useAuth } from '../../context/AuthContext';
 import { apiRequest } from '../../api/client';
+import { toLocalInputValue } from '../../utils/datetime';
 import { Send, MapPin, Calculator, AlertCircle, CheckCircle2, Award } from 'lucide-react';
 
 export const ReportSurplus: React.FC = () => {
@@ -15,8 +16,8 @@ export const ReportSurplus: React.FC = () => {
     mealType: 'DINNER',
     quantityKg: 24.5,
     portionsEstimate: 60,
-    preparedAt: new Date().toISOString().slice(0, 16),
-    collectBy: new Date(Date.now() + 3.5 * 3600000).toISOString().slice(0, 16),
+    preparedAt: toLocalInputValue(),
+    collectBy: toLocalInputValue(new Date(Date.now() + 3.5 * 3600000)),
     dietaryTags: ['VEG', 'HALAL'],
     notes: 'Stored in sanitary thermal insulated containers. Loading dock available at Gate 2.',
   });
@@ -28,11 +29,13 @@ export const ReportSurplus: React.FC = () => {
 
   useEffect(() => {
     apiRequest('/messes').then(data => {
-      setMesses(data);
-      if (user?.organizationId) {
+      // A mess manager can only post for their own mess, so only that mess is offered.
+      const own = user?.role === 'MESS_ADMIN' ? data.filter((m: any) => m._id === user.organizationId) : data;
+      setMesses(own);
+      if (user?.organizationId && own.some((m: any) => m._id === user.organizationId)) {
         setSelectedMessId(user.organizationId);
-      } else if (data.length > 0) {
-        setSelectedMessId(data[0]._id);
+      } else if (own.length > 0) {
+        setSelectedMessId(own[0]._id);
       }
     });
   }, [user]);
@@ -54,6 +57,18 @@ export const ReportSurplus: React.FC = () => {
     setIsSubmitting(true);
     setSuccessMessage(null);
     setErrorMessage(null);
+
+    const collectBy = new Date(form.collectBy);
+    if (collectBy.getTime() <= Date.now()) {
+      setErrorMessage('The pickup deadline has already passed. Choose a later "Must be collected by" time.');
+      setIsSubmitting(false);
+      return;
+    }
+    if (collectBy <= new Date(form.preparedAt)) {
+      setErrorMessage('"Must be collected by" has to be after the time the food was cooked.');
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const payload = {
@@ -125,6 +140,7 @@ export const ReportSurplus: React.FC = () => {
             <select
               value={selectedMessId}
               onChange={e => setSelectedMessId(e.target.value)}
+              disabled={user?.role === 'MESS_ADMIN'}
               className="w-full px-3 py-2 rounded border border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark text-text-primary-light dark:text-text-primary-dark font-medium focus:outline-hidden"
               required
             >
