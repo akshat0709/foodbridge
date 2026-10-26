@@ -9,7 +9,7 @@
     "client"
   ],
   "scripts": {
-    "build": "./node_modules/.bin/esbuild server/src/index.ts --bundle --platform=node --format=esm --target=node20 --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\" --external:pdfkit --outfile=api/index.js && cp api/index.js \"api/[...all].js\" && cp api/index.js client/api/index.js && cp \"api/[...all].js\" \"client/api/[...all].js\" && npm --prefix server run build && npm --prefix client run build && rm -rf dist && cp -r client/dist dist",
+    "build": "npm --prefix server run build && npm --prefix client run build",
     "dev": "concurrently -n \"SERVER,CLIENT,ML\" -c \"cyan,green,yellow\" \"npm run server\" \"npm run client\" \"npm run ml\"",
     "dev:app": "concurrently -n \"SERVER,CLIENT\" -c \"cyan,green\" \"npm run server\" \"npm run client\"",
     "server": "npm --prefix server run dev",

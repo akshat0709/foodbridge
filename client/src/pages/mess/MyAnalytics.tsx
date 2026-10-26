@@ -47,20 +47,20 @@ export const MyAnalytics: React.FC = () => {
   };
 
   const getHeatColor = (val: number) => {
-    if (val === 0) return 'bg-[#F2F1ED] dark:bg-[#222326] text-text-muted-light';
-    if (val < 10) return 'bg-[#DCFCE7] text-[#166534] dark:bg-[#14532D]/40 dark:text-[#86EFAC]';
-    if (val < 18) return 'bg-[#FEF3C7] text-[#B45309] dark:bg-[#78350F]/40 dark:text-[#FCD34D]';
-    return 'bg-[#FEE2E2] text-[#991B1B] dark:bg-[#7F1D1D]/50 dark:text-[#FCA5A5]';
+    if (val === 0) return 'bg-[#EBF0EE] dark:bg-[#222326] text-text-muted-light';
+    if (val < 10) return 'bg-[#E1EFE6] text-[#1E5B3C] dark:bg-[#1B3A2A]/40 dark:text-[#9FD4B2]';
+    if (val < 18) return 'bg-[#FBF0D9] text-[#9A6A0B] dark:bg-[#4A3608]/40 dark:text-[#E8B04A]';
+    return 'bg-[#F8E3DE] text-[#8E3322] dark:bg-[#4A1F17]/50 dark:text-[#F0A895]';
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-          Hostel Mess Analytics & Waste Distributions
+        <h1 className="text-[1.75rem] leading-tight text-text-primary-light dark:text-text-primary-dark">
+          My analytics
         </h1>
-        <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-          Temporal heatmap and Pareto distribution powered by MongoDB aggregation pipelines.
+        <p className="text-[15px] text-text-secondary-light dark:text-text-secondary-dark mt-1 max-w-2xl">
+          When your mess has the most leftovers, and which dishes account for most of the waste.
         </p>
       </div>
 
@@ -136,21 +136,21 @@ export const MyAnalytics: React.FC = () => {
         <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={paretoData} margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.5} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#DCE3E0" opacity={0.5} />
               <XAxis dataKey="category" tick={{ fontSize: 11 }} />
               <YAxis yAxisId="left" unit=" kg" tick={{ fontSize: 11 }} />
               <YAxis yAxisId="right" orientation="right" unit="%" domain={[0, 100]} tick={{ fontSize: 11 }} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#18191B',
-                  borderColor: '#27282B',
+                  backgroundColor: '#16201C',
+                  borderColor: '#25332D',
                   borderRadius: '6px',
                   color: '#FFFFFF',
                   fontSize: '12px',
                 }}
               />
-              <Bar yAxisId="left" dataKey="totalLeftoverKg" fill="#166534" radius={[4, 4, 0, 0]} name="Waste (kg)" />
-              <Line yAxisId="right" type="monotone" dataKey="cumulativePct" stroke="#D97706" strokeWidth={2} name="Cumulative %" />
+              <Bar yAxisId="left" dataKey="totalLeftoverKg" fill="#1E5B3C" radius={[4, 4, 0, 0]} name="Waste (kg)" />
+              <Line yAxisId="right" type="monotone" dataKey="cumulativePct" stroke="#D99A1E" strokeWidth={2} name="Cumulative %" />
             </ComposedChart>
           </ResponsiveContainer>
         </div>

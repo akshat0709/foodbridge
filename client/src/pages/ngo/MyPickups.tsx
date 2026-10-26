@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { PageHero } from '../../components/PageHero';
 import { useAuth } from '../../context/AuthContext';
 import { apiRequest } from '../../api/client';
 import { DataTable, Column } from '../../components/DataTable';
@@ -56,7 +57,7 @@ export const MyPickups: React.FC = () => {
           <div className="font-medium text-text-primary-light dark:text-text-primary-dark">
             {r.title}
           </div>
-          <div className="text-[11px] text-text-muted-light dark:text-text-muted-dark">
+          <div className="text-xs text-text-muted-light dark:text-text-muted-dark">
             {r.messId?.name} • {r.pickupAddress}
           </div>
         </div>
@@ -103,7 +104,7 @@ export const MyPickups: React.FC = () => {
                 )
               }
               disabled={processingId === r._id}
-              className="px-2 py-1 rounded bg-[#E0E7FF] text-[#3730A3] dark:bg-[#312E81] dark:text-[#A5B4FC] font-medium text-[11px] hover:opacity-80 transition-opacity"
+              className="px-2 py-1 rounded bg-[#E2EAF2] text-[#2F4F6E] dark:bg-[#1E2F40] dark:text-[#A9C2DA] font-medium text-xs hover:opacity-80 transition-opacity"
             >
               Mark Collected
             </button>
@@ -119,7 +120,7 @@ export const MyPickups: React.FC = () => {
                 )
               }
               disabled={processingId === r._id}
-              className="px-2 py-1 rounded bg-[#DCFCE7] text-[#166534] dark:bg-[#14532D] dark:text-[#86EFAC] font-medium text-[11px] hover:opacity-80 transition-opacity flex items-center gap-1"
+              className="px-2 py-1 rounded bg-[#E1EFE6] text-[#1E5B3C] dark:bg-[#1B3A2A] dark:text-[#9FD4B2] font-medium text-xs hover:opacity-80 transition-opacity flex items-center gap-1"
             >
               <Check className="w-3 h-3" />
               <span>Complete Delivery</span>
@@ -136,14 +137,14 @@ export const MyPickups: React.FC = () => {
                 )
               }
               disabled={processingId === r._id}
-              className="px-2 py-1 rounded bg-[#FEE2E2] text-[#991B1B] dark:bg-[#7F1D1D] dark:text-[#FCA5A5] font-medium text-[11px] hover:opacity-80 transition-opacity"
+              className="px-2 py-1 rounded bg-[#F8E3DE] text-[#8E3322] dark:bg-[#4A1F17] dark:text-[#F0A895] font-medium text-xs hover:opacity-80 transition-opacity"
             >
               Fail
             </button>
           )}
 
           {(r.status === 'COMPLETED' || r.status === 'EXPIRED' || r.status === 'FAILED') && (
-            <span className="text-[11px] text-text-muted-light dark:text-text-muted-dark font-mono">
+            <span className="text-xs text-text-muted-light dark:text-text-muted-dark font-mono">
               Archived
             </span>
           )}
@@ -154,14 +155,13 @@ export const MyPickups: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-          Assigned Pickups & Mission Execution
-        </h1>
-        <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-          Execute handoffs from Reserved to Collected to Completed with atomic transition logging.
-        </p>
-      </div>
+      <PageHero
+        image="/images/ngo-packing-bags.webp"
+        imageAlt="A volunteer packing paper bags of food at a distribution point"
+        title="My pickups"
+        description="Mark each pickup as collected when it is in your van, and delivered once it has been handed out."
+        focus="center 35%"
+      />
 
       <DataTable
         columns={columns}

@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc && npx esbuild src/index.ts --bundle --platform=node --format=esm --target=node20 --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\" --external:pdfkit --outfile=dist/index.js",
+    "build": "tsc",
+    "vercel-build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc --noEmit",
     "start": "node dist/server.js",
     "test": "vitest run"
   },

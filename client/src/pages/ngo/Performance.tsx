@@ -16,11 +16,11 @@ export const Performance: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-          NGO Reliability Scoring & Fleet Performance
+        <h1 className="text-[1.75rem] leading-tight text-text-primary-light dark:text-text-primary-dark">
+          Performance
         </h1>
-        <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-          Smoothed Bayesian average reliability prevents low-sample bias while tracking time-of-day delivery fidelity.
+        <p className="text-[15px] text-text-secondary-light dark:text-text-secondary-dark mt-1 max-w-2xl">
+          How reliably each NGO collects what it claims, and at which times of day.
         </p>
       </div>
 
@@ -102,7 +102,7 @@ export const Performance: React.FC = () => {
                           <div className="font-medium text-text-primary-light dark:text-text-primary-dark">
                             {ngo.name}
                           </div>
-                          <div className="text-[11px] text-text-muted-light dark:text-text-muted-dark font-mono">
+                          <div className="text-xs text-text-muted-light dark:text-text-muted-dark font-mono">
                             {ngo.registrationNumber}
                           </div>
                         </div>

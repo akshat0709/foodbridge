@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { PageHero } from '../../components/PageHero';
 import { useAuth } from '../../context/AuthContext';
 import { apiRequest } from '../../api/client';
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
@@ -9,14 +10,14 @@ import { MapPin, Truck, Clock, CheckCircle2, AlertCircle, Shield } from 'lucide-
 // Custom Map Pins for Leaflet
 const messIcon = new L.DivIcon({
   className: 'custom-pin',
-  html: `<div style="background-color:#166534;width:24px;height:24px;border-radius:50%;border:2px solid white;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:10px;box-shadow:0 2px 4px rgba(0,0,0,0.3)">M</div>`,
+  html: `<div style="background-color:#1E5B3C;width:24px;height:24px;border-radius:50%;border:2px solid white;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:10px;box-shadow:0 2px 4px rgba(0,0,0,0.3)">M</div>`,
   iconSize: [24, 24],
   iconAnchor: [12, 12],
 });
 
 const ngoIcon = new L.DivIcon({
   className: 'custom-ngo-pin',
-  html: `<div style="background-color:#D97706;width:28px;height:28px;border-radius:50%;border:2px solid white;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:11px;box-shadow:0 2px 5px rgba(0,0,0,0.4)">NGO</div>`,
+  html: `<div style="background-color:#D99A1E;width:28px;height:28px;border-radius:50%;border:2px solid white;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:11px;box-shadow:0 2px 5px rgba(0,0,0,0.4)">NGO</div>`,
   iconSize: [28, 28],
   iconAnchor: [14, 14],
 });
@@ -71,7 +72,7 @@ export const NearbyDonations: React.FC = () => {
 
       setActionMessage({
         type: 'success',
-        text: `Successfully claimed ${res.title}! Status updated to RESERVED. Vehicle dispatch assigned.`,
+        text: `Claimed “${res.title}”. It is held for your team. You will find it under My pickups.`,
       });
       fetchNgoAndNearby();
     } catch (err: any) {
@@ -90,21 +91,20 @@ export const NearbyDonations: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-          Nearby Available Food Surplus & Active Coverage
-        </h1>
-        <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-          Real-time geospatial distribution of unreserved hostel mess surpluses within your verified service radius.
-        </p>
-      </div>
+      <PageHero
+        image="/images/ngo-van-loading.webp"
+        imageAlt="A volunteer loading cartons into the back of a van"
+        title="Food near you"
+        description="Leftover meals from hostel messes inside your service area. Claim one and it is held for your team."
+        focus="center 45%"
+      />
 
       {actionMessage && (
         <div
           className={`p-3 rounded-md border text-xs flex items-center gap-2 ${
             actionMessage.type === 'success'
-              ? 'bg-[#DCFCE7] dark:bg-[#14532D] border-[#BBF7D0] text-[#166534] dark:text-[#86EFAC]'
-              : 'bg-[#FEE2E2] dark:bg-[#7F1D1D] border-[#FECACA] text-[#991B1B] dark:text-[#FCA5A5]'
+              ? 'bg-[#E1EFE6] dark:bg-[#1B3A2A] border-[#C6DFCF] text-[#1E5B3C] dark:text-[#9FD4B2]'
+              : 'bg-[#F8E3DE] dark:bg-[#4A1F17] border-[#EFC5BB] text-[#8E3322] dark:text-[#F0A895]'
           }`}
         >
           {actionMessage.type === 'success' ? (
@@ -148,8 +148,8 @@ export const NearbyDonations: React.FC = () => {
                 center={[centerLat, centerLng]}
                 radius={radiusMeters}
                 pathOptions={{
-                  color: '#166534',
-                  fillColor: '#166534',
+                  color: '#1E5B3C',
+                  fillColor: '#1E5B3C',
                   fillOpacity: 0.08,
                   weight: 1.5,
                   dashArray: '4, 4',
@@ -175,7 +175,7 @@ export const NearbyDonations: React.FC = () => {
                     <div className="font-mono">
                       {item.quantityKg} kg (~{item.portionsEstimate} portions)
                     </div>
-                    <div className="text-[11px] text-gray-500">
+                    <div className="text-xs text-gray-500">
                       Collect before {new Date(item.collectBy).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </div>
@@ -186,76 +186,89 @@ export const NearbyDonations: React.FC = () => {
         </MapContainer>
       </div>
 
-      {/* Available Surplus Cards Grid */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between text-xs">
-          <span className="font-semibold text-text-primary-light dark:text-text-primary-dark">
-            Surplus Batches Available for Pickup ({nearbyListings.length})
-          </span>
-          <span className="text-text-muted-light dark:text-text-muted-dark font-mono">
-            Service Radius: {ngoDetails?.serviceRadiusKm || 15} km | Capacity: {ngoDetails?.vehicleCapacityKg || 250} kg
+      {/* Available surplus */}
+      <section className="space-y-3" aria-labelledby="nearby-heading">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 id="nearby-heading" className="text-xl text-text-primary-light dark:text-text-primary-dark">
+            {nearbyListings.length === 1 ? '1 batch ready to collect' : `${nearbyListings.length} batches ready to collect`}
+          </h2>
+          <span className="text-sm text-text-muted-light dark:text-text-muted-dark">
+            Within {ngoDetails?.serviceRadiusKm || 15} km of your base, up to {ngoDetails?.vehicleCapacityKg || 250} kg per trip
           </span>
         </div>
 
         {nearbyListings.length === 0 ? (
-          <div className="p-8 text-center rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-muted-light dark:text-text-muted-dark text-xs">
-            No unclaimed surpluses in your perimeter right now. Checking for next meal logs...
+          <div className="p-10 text-center rounded-lg border border-dashed border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
+            <p className="font-semibold text-text-primary-light dark:text-text-primary-dark">Nothing to collect nearby right now</p>
+            <p className="mt-1 text-sm text-text-muted-light dark:text-text-muted-dark">
+              New food usually appears after lunch and dinner service. To see more messes, widen your service area.
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {nearbyListings.map(listing => (
-              <div
-                key={listing._id}
-                className="p-4 rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark flex flex-col justify-between space-y-3 text-xs"
-              >
-                <div>
-                  <div className="flex items-center justify-between">
-                    <StatusBadge status={listing.status} size="sm" />
-                    <span className="font-mono text-brand font-bold text-[11px]">
-                      {listing.distanceKm} km away
-                    </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {nearbyListings.map(listing => {
+              const collectBy = new Date(listing.collectBy);
+              const minsLeft = Math.round((collectBy.getTime() - Date.now()) / 60000);
+              const timeLeft =
+                minsLeft <= 0 ? 'past the deadline' : minsLeft < 60 ? `${minsLeft} min left` : `${Math.floor(minsLeft / 60)} h ${minsLeft % 60} min left`;
+              const urgent = minsLeft < 60;
+              return (
+                <article
+                  key={listing._id}
+                  className="rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark flex flex-col overflow-hidden"
+                >
+                  <div className="p-4 flex-1">
+                    <div className="flex items-center justify-between">
+                      <StatusBadge status={listing.status} size="sm" />
+                      <span className="text-sm font-semibold text-text-secondary-light dark:text-text-secondary-dark">
+                        {listing.distanceKm} km away
+                      </span>
+                    </div>
+
+                    <h3 className="mt-3 text-lg leading-snug text-text-primary-light dark:text-text-primary-dark">{listing.title}</h3>
+                    <p className="text-sm text-text-muted-light dark:text-text-muted-dark">{listing.mess?.name || 'Hostel mess'}</p>
+
+                    <div className="mt-4 flex items-end gap-6">
+                      <div>
+                        <span className="figure text-3xl leading-none text-text-primary-light dark:text-text-primary-dark">{listing.quantityKg}</span>
+                        <span className="ml-1 text-sm text-text-muted-light dark:text-text-muted-dark">kg</span>
+                      </div>
+                      <div>
+                        <span className="figure text-3xl leading-none text-text-primary-light dark:text-text-primary-dark">~{listing.portionsEstimate}</span>
+                        <span className="ml-1 text-sm text-text-muted-light dark:text-text-muted-dark">portions</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <h3 className="font-semibold text-text-primary-light dark:text-text-primary-dark mt-2 leading-snug">
-                    {listing.title}
-                  </h3>
-
-                  <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark mt-0.5">
-                    {listing.mess?.name || 'Campus Hostel Mess'}
-                  </p>
-
-                  <div className="mt-2.5 p-2 rounded bg-bg-light dark:bg-bg-dark border border-border-light dark:border-border-dark font-mono text-[11px] flex justify-between">
-                    <span>
-                      Qty: <strong>{listing.quantityKg} kg</strong>
-                    </span>
-                    <span>~{listing.portionsEstimate} portions</span>
-                  </div>
-                </div>
-
-                <div className="space-y-2 border-t border-border-light dark:border-border-dark pt-2.5">
-                  <div className="flex items-center justify-between text-[11px] text-text-secondary-light dark:text-text-secondary-dark">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3 text-warning" /> Collect before
-                    </span>
-                    <span className="font-mono font-medium">
-                      {new Date(listing.collectBy).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                  </div>
-
-                  <button
-                    onClick={() => handleClaim(listing._id)}
-                    disabled={claimingId === listing._id}
-                    className="w-full py-1.5 px-3 rounded font-medium text-white bg-brand hover:bg-brand-dark transition-colors flex items-center justify-center gap-1.5 shadow-2xs disabled:opacity-50"
+                  <div
+                    className={`px-4 py-2.5 flex items-center gap-2 text-sm ${
+                      urgent
+                        ? 'bg-turmeric-light dark:bg-[#4A3608] text-[#7A5205] dark:text-[#E8B04A] font-semibold'
+                        : 'bg-bg-light dark:bg-bg-dark text-text-secondary-light dark:text-text-secondary-dark'
+                    }`}
                   >
-                    <Truck className="w-3.5 h-3.5" />
-                    <span>{claimingId === listing._id ? 'Securing Claim...' : 'Accept & Reserve Pickup'}</span>
-                  </button>
-                </div>
-              </div>
-            ))}
+                    <Clock className="w-4 h-4 shrink-0" />
+                    <span>
+                      Collect by {collectBy.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} ({timeLeft})
+                    </span>
+                  </div>
+
+                  <div className="p-4 pt-3">
+                    <button
+                      onClick={() => handleClaim(listing._id)}
+                      disabled={claimingId === listing._id}
+                      className="w-full h-10 px-3 rounded-md font-semibold text-white bg-brand hover:bg-brand-dark transition-colors inline-flex items-center justify-center gap-2 disabled:opacity-60"
+                    >
+                      <Truck className="w-4 h-4" />
+                      <span>{claimingId === listing._id ? 'Claiming…' : 'Claim this pickup'}</span>
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 };

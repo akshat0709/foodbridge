@@ -16,9 +16,15 @@ interface FilterContextType {
   queryString: string;
 }
 
-const defaultFilters: GlobalFilterState = {
+// The end date is today (local time), so newly posted food always shows up in analytics.
+const todayIso = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
+export const defaultFilters: GlobalFilterState = {
   startDate: '2025-01-01',
-  endDate: '2026-10-23',
+  endDate: todayIso(),
   messId: 'ALL',
   ngoId: 'ALL',
   mealType: 'ALL',

@@ -75,11 +75,11 @@ export const DataQuality: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-          Data Quality, Cleaning & Ingestion Hygiene
+        <h1 className="text-[1.75rem] leading-tight text-text-primary-light dark:text-text-primary-dark">
+          Data quality
         </h1>
-        <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-          Audits dataset completeness, duplicate collision rate, physical constraint violations, and streaming validation.
+        <p className="text-[15px] text-text-secondary-light dark:text-text-secondary-dark mt-1 max-w-2xl">
+          Missing values, duplicates and impossible numbers in the meal logs, plus a checked bulk import.
         </p>
       </div>
 
@@ -154,7 +154,7 @@ export const DataQuality: React.FC = () => {
                       {cat.failed.toLocaleString()}
                     </td>
                     <td className="py-2.5 px-3 text-right font-bold">{passRate}%</td>
-                    <td className="py-2.5 px-3 font-sans text-text-secondary-light dark:text-text-secondary-dark text-[11px]">
+                    <td className="py-2.5 px-3 font-sans text-text-secondary-light dark:text-text-secondary-dark text-xs">
                       {cat.failureReason}
                     </td>
                   </tr>
@@ -183,7 +183,7 @@ export const DataQuality: React.FC = () => {
           value={importInput}
           onChange={e => setImportInput(e.target.value)}
           placeholder="messId,date,mealType,foodCategory,preparedKg,servedKg,leftoverKg&#10;6ad...,2026-10-23T12:00:00Z,LUNCH,RICE_GRAINS,90,75,15&#10;invalid_mess,2026-10-23T12:00:00Z,LUNCH,RICE_GRAINS,90,110,-20"
-          className="w-full p-3 rounded border border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark font-mono text-[11px] focus:outline-hidden"
+          className="w-full p-3 rounded border border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark font-mono text-xs focus:outline-hidden"
         />
 
         <button
@@ -207,8 +207,8 @@ export const DataQuality: React.FC = () => {
 
             {report.rejectedCount > 0 && (
               <div className="space-y-1.5">
-                <div className="text-[11px] font-semibold text-danger">Rejection Reasons (Row Isolation):</div>
-                <div className="space-y-1 font-mono text-[11px] max-h-40 overflow-y-auto">
+                <div className="text-xs font-semibold text-danger">Rejection Reasons (Row Isolation):</div>
+                <div className="space-y-1 font-mono text-xs max-h-40 overflow-y-auto">
                   {report.rejectionDetails.map((rej: any, i: number) => (
                     <div
                       key={i}

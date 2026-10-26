@@ -87,12 +87,12 @@ export const AnalyticsExplorer: React.FC = () => {
       {/* Page Title & Segmented Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-            Big Data Analytics Pipeline Explorer
+          <h1 className="text-[1.75rem] leading-tight text-text-primary-light dark:text-text-primary-dark">
+            Analytics explorer
           </h1>
-          <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-            Real MongoDB aggregation pipelines executing multi-stage joins, faceting, and statistical rollups.
-          </p>
+          <p className="text-[15px] text-text-secondary-light dark:text-text-secondary-dark mt-1 max-w-2xl">
+          Waste by mess, by day and meal, by food type, and how each NGO is performing.
+        </p>
         </div>
 
         {/* Tab Switcher */}
@@ -146,20 +146,20 @@ export const AnalyticsExplorer: React.FC = () => {
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={wasteByMess.slice(0, 15)} margin={{ top: 10, right: 10, left: 0, bottom: 35 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.5} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#DCE3E0" opacity={0.5} />
                 <XAxis dataKey="messName" tick={{ fontSize: 9 }} angle={-25} textAnchor="end" interval={0} />
                 <YAxis unit=" kg" tick={{ fontSize: 10 }} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#18191B',
-                    borderColor: '#27282B',
+                    backgroundColor: '#16201C',
+                    borderColor: '#25332D',
                     borderRadius: '6px',
                     color: '#FFFFFF',
                     fontSize: '12px',
                   }}
                 />
-                <Bar dataKey="totalLeftoverKg" fill="#B91C1C" radius={[3, 3, 0, 0]} name="Total Leftover (kg)" />
-                <Bar dataKey="totalDonatedKg" fill="#166534" radius={[3, 3, 0, 0]} name="Redistributed (kg)" />
+                <Bar dataKey="totalLeftoverKg" fill="#B4432E" radius={[3, 3, 0, 0]} name="Total Leftover (kg)" />
+                <Bar dataKey="totalDonatedKg" fill="#1E5B3C" radius={[3, 3, 0, 0]} name="Redistributed (kg)" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -239,9 +239,9 @@ export const AnalyticsExplorer: React.FC = () => {
                     {['BREAKFAST', 'LUNCH', 'SNACKS', 'DINNER'].map(mType => {
                       const item = heatmapData.find(d => d.dayOfWeek === dIdx && d.mealType === mType);
                       const val = item ? item.avgLeftoverKg : 0;
-                      let bg = 'bg-[#DCFCE7] text-[#166534] dark:bg-[#14532D]/40 dark:text-[#86EFAC]';
-                      if (val > 12) bg = 'bg-[#FEF3C7] text-[#B45309] dark:bg-[#78350F]/40 dark:text-[#FCD34D]';
-                      if (val > 18) bg = 'bg-[#FEE2E2] text-[#991B1B] dark:bg-[#7F1D1D]/50 dark:text-[#FCA5A5]';
+                      let bg = 'bg-[#E1EFE6] text-[#1E5B3C] dark:bg-[#1B3A2A]/40 dark:text-[#9FD4B2]';
+                      if (val > 12) bg = 'bg-[#FBF0D9] text-[#9A6A0B] dark:bg-[#4A3608]/40 dark:text-[#E8B04A]';
+                      if (val > 18) bg = 'bg-[#F8E3DE] text-[#8E3322] dark:bg-[#4A1F17]/50 dark:text-[#F0A895]';
 
                       return (
                         <td key={mType} className="py-2 px-2 text-center">
@@ -277,21 +277,21 @@ export const AnalyticsExplorer: React.FC = () => {
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={paretoData} margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.5} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#DCE3E0" opacity={0.5} />
                 <XAxis dataKey="category" tick={{ fontSize: 11 }} />
                 <YAxis yAxisId="left" unit=" kg" tick={{ fontSize: 11 }} />
                 <YAxis yAxisId="right" orientation="right" unit="%" domain={[0, 100]} tick={{ fontSize: 11 }} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#18191B',
-                    borderColor: '#27282B',
+                    backgroundColor: '#16201C',
+                    borderColor: '#25332D',
                     borderRadius: '6px',
                     color: '#FFFFFF',
                     fontSize: '12px',
                   }}
                 />
-                <Bar yAxisId="left" dataKey="totalLeftoverKg" fill="#166534" radius={[4, 4, 0, 0]} name="Waste (kg)" />
-                <Line yAxisId="right" type="monotone" dataKey="cumulativePct" stroke="#D97706" strokeWidth={2.5} name="Cumulative %" />
+                <Bar yAxisId="left" dataKey="totalLeftoverKg" fill="#1E5B3C" radius={[4, 4, 0, 0]} name="Waste (kg)" />
+                <Line yAxisId="right" type="monotone" dataKey="cumulativePct" stroke="#D99A1E" strokeWidth={2.5} name="Cumulative %" />
               </ComposedChart>
             </ResponsiveContainer>
           </div>
@@ -370,19 +370,19 @@ export const AnalyticsExplorer: React.FC = () => {
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={growthData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.5} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#DCE3E0" opacity={0.5} />
                 <XAxis dataKey="month" tick={{ fontSize: 10 }} />
                 <YAxis unit=" kg" tick={{ fontSize: 10 }} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#18191B',
-                    borderColor: '#27282B',
+                    backgroundColor: '#16201C',
+                    borderColor: '#25332D',
                     borderRadius: '6px',
                     color: '#FFFFFF',
                     fontSize: '12px',
                   }}
                 />
-                <Bar dataKey="totalLeftoverKg" fill="#166534" radius={[3, 3, 0, 0]} name="Waste (kg)" />
+                <Bar dataKey="totalLeftoverKg" fill="#1E5B3C" radius={[3, 3, 0, 0]} name="Waste (kg)" />
               </BarChart>
             </ResponsiveContainer>
           </div>

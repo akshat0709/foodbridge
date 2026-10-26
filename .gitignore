@@ -48,3 +48,8 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Build outputs (Vercel builds these from source)
+dist/
+server/dist/
+.vercel/

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { PageHero } from '../../components/PageHero';
 import { useAuth } from '../../context/AuthContext';
 import { apiRequest, exportCsv } from '../../api/client';
 import { DataTable, Column } from '../../components/DataTable';
@@ -132,7 +133,7 @@ export const MealLog: React.FC = () => {
           <div className="font-mono text-xs font-semibold">
             {new Date(r.date).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
           </div>
-          <div className="text-[11px] text-text-muted-light dark:text-text-muted-dark font-medium">
+          <div className="text-xs text-text-muted-light dark:text-text-muted-dark font-medium">
             {r.mealType} • {r.foodCategory?.replace('_', ' ')}
           </div>
         </div>
@@ -173,7 +174,7 @@ export const MealLog: React.FC = () => {
             {r.leftoverKg} kg
           </span>
           {r.isAnomaly && (
-            <span className="block text-[10px] text-danger font-mono font-semibold">
+            <span className="block text-xs text-danger font-mono font-semibold">
               ANOMALY (z={r.anomalyScore})
             </span>
           )}
@@ -200,37 +201,34 @@ export const MealLog: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-            Hostel Mess Meal Preparation & Waste Log
-          </h1>
-          <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-            Track daily attendance, batch preparation, leftovers, and automated statistical anomaly alerts.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowBulkModal(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark hover:bg-surface-hover-light dark:hover:bg-surface-hover-dark text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark"
-          >
-            <UploadCloud className="w-3.5 h-3.5 text-brand" />
-            <span>Bulk Import CSV</span>
-          </button>
-
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded font-medium text-xs text-white bg-brand hover:bg-brand-dark transition-colors shadow-2xs"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Record Meal Session</span>
-          </button>
-        </div>
-      </div>
+      <PageHero
+        image="/images/mess-kitchen-prep.webp"
+        imageAlt="Cooks in a commercial kitchen laying out trays of food"
+        title="Meal log"
+        description="Record how much was cooked, served and left over at each meal. Unusual leftovers are flagged automatically."
+        focus="center 40%"
+        actions={
+          <>
+            <button
+              onClick={() => setShowBulkModal(true)}
+              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-md bg-white/15 hover:bg-white/25 text-white text-sm font-medium backdrop-blur transition-colors"
+            >
+              <UploadCloud className="w-4 h-4" />
+              <span>Import CSV</span>
+            </button>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-md bg-turmeric hover:bg-[#C98A12] text-brand-deep text-sm font-semibold transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Record a meal</span>
+            </button>
+          </>
+        }
+      />
 
       {loadError && (
-        <div className="p-3 rounded border border-[#FECACA] bg-[#FEE2E2] dark:bg-[#7F1D1D] text-xs text-[#991B1B] dark:text-[#FCA5A5]">
+        <div className="p-3 rounded border border-[#EFC5BB] bg-[#F8E3DE] dark:bg-[#4A1F17] text-xs text-[#8E3322] dark:text-[#F0A895]">
           {loadError}
         </div>
       )}
@@ -376,7 +374,7 @@ export const MealLog: React.FC = () => {
                     step="0.5"
                     value={newLog.leftoverKg}
                     readOnly
-                    className="w-full px-2 py-1.5 rounded border border-border-light dark:border-border-dark bg-[#F2F1ED] dark:bg-[#1E1F22] font-mono text-xs font-bold"
+                    className="w-full px-2 py-1.5 rounded border border-border-light dark:border-border-dark bg-[#EBF0EE] dark:bg-[#1E1F22] font-mono text-xs font-bold"
                   />
                 </div>
               </div>
@@ -418,7 +416,7 @@ export const MealLog: React.FC = () => {
               value={importText}
               onChange={e => setImportText(e.target.value)}
               placeholder="messId,date,mealType,foodCategory,preparedKg,servedKg,leftoverKg&#10;6789...,2026-10-23T12:00:00Z,LUNCH,RICE_GRAINS,80,68,12&#10;6789...,2026-10-23T19:00:00Z,DINNER,CURRY_DAL,65,55,10"
-              className="w-full p-3 rounded border border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark font-mono text-[11px] focus:outline-hidden"
+              className="w-full p-3 rounded border border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark font-mono text-xs focus:outline-hidden"
             />
 
             <button
@@ -442,8 +440,8 @@ export const MealLog: React.FC = () => {
 
                 {importReport.rejectedCount > 0 && (
                   <div className="mt-2 space-y-1">
-                    <div className="text-[11px] font-semibold text-danger">Rejection Details:</div>
-                    <div className="max-h-32 overflow-y-auto space-y-1 font-mono text-[10px]">
+                    <div className="text-xs font-semibold text-danger">Rejection Details:</div>
+                    <div className="max-h-32 overflow-y-auto space-y-1 font-mono text-xs">
                       {importReport.rejectionDetails.map((rej: any, i: number) => (
                         <div
                           key={i}

@@ -65,20 +65,20 @@ export const MatchingLab: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-          Matching Lab & Policy Simulation Sandbox
+        <h1 className="text-[1.75rem] leading-tight text-text-primary-light dark:text-text-primary-dark">
+          Matching lab
         </h1>
-        <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-          Replay historical surplus distributions with customized objective weights to evaluate simulated pickup efficiency.
+        <p className="text-[15px] text-text-secondary-light dark:text-text-secondary-dark mt-1 max-w-2xl">
+          Replay past listings with different ranking weights to see which NGOs would have been matched.
         </p>
       </div>
 
       {/* Geospatial Recommendation Banner (Section 5, Item 10) */}
       {geospatialData?.recommendation && (
-        <div className="p-4 rounded-md border border-brand/30 bg-[#DCFCE7]/30 dark:bg-[#14532D]/30 flex items-start gap-3 text-xs">
+        <div className="p-4 rounded-md border border-brand/30 bg-[#E1EFE6]/30 dark:bg-[#1B3A2A]/30 flex items-start gap-3 text-xs">
           <MapPin className="w-4 h-4 text-brand shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <span className="font-semibold text-brand dark:text-[#86EFAC] uppercase tracking-wide">
+            <span className="font-semibold text-brand dark:text-[#9FD4B2] uppercase tracking-wide">
               Geospatial Unserved Zone Recommendation
             </span>
             <p className="text-text-primary-light dark:text-text-primary-dark font-medium leading-relaxed">
@@ -131,7 +131,7 @@ export const MatchingLab: React.FC = () => {
               onChange={e => handleWeightChange('distanceWeight', parseFloat(e.target.value))}
               className="w-full h-1.5 bg-border-light dark:bg-border-dark rounded-lg appearance-none cursor-pointer accent-brand"
             />
-            <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark mt-1">
+            <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">
               Favors physically nearest partner hub.
             </p>
           </div>
@@ -150,7 +150,7 @@ export const MatchingLab: React.FC = () => {
               onChange={e => handleWeightChange('capacityWeight', parseFloat(e.target.value))}
               className="w-full h-1.5 bg-border-light dark:bg-border-dark rounded-lg appearance-none cursor-pointer accent-brand"
             />
-            <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark mt-1">
+            <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">
               Favors vehicles with matching payload capacity.
             </p>
           </div>
@@ -169,7 +169,7 @@ export const MatchingLab: React.FC = () => {
               onChange={e => handleWeightChange('deadlineWeight', parseFloat(e.target.value))}
               className="w-full h-1.5 bg-border-light dark:bg-border-dark rounded-lg appearance-none cursor-pointer accent-brand"
             />
-            <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark mt-1">
+            <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">
               Penalizes candidates with transit times close to expiry.
             </p>
           </div>
@@ -188,7 +188,7 @@ export const MatchingLab: React.FC = () => {
               onChange={e => handleWeightChange('reliabilityWeight', parseFloat(e.target.value))}
               className="w-full h-1.5 bg-border-light dark:bg-border-dark rounded-lg appearance-none cursor-pointer accent-brand"
             />
-            <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark mt-1">
+            <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">
               Favors organizations with historical completion fidelity.
             </p>
           </div>
@@ -216,11 +216,11 @@ export const MatchingLab: React.FC = () => {
                     <span className="font-semibold text-text-primary-light dark:text-text-primary-dark">
                       {listing.title}
                     </span>
-                    <span className="text-[11px] text-text-muted-light dark:text-text-muted-dark ml-2">
+                    <span className="text-xs text-text-muted-light dark:text-text-muted-dark ml-2">
                       ({listing.quantityKg} kg • {listing.mealType})
                     </span>
                   </div>
-                  <span className="font-mono text-[11px] text-text-muted-light dark:text-text-muted-dark">
+                  <span className="font-mono text-xs text-text-muted-light dark:text-text-muted-dark">
                     ID: {listing._id.slice(-6)}
                   </span>
                 </div>
@@ -228,27 +228,27 @@ export const MatchingLab: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                   {/* Actual Historic Assignment */}
                   <div className="p-2.5 rounded bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark">
-                    <span className="text-[10px] font-mono text-text-muted-light uppercase block">
+                    <span className="text-xs font-mono text-text-muted-light uppercase block">
                       Actual Historic Winner
                     </span>
                     <div className="font-semibold text-text-primary-light dark:text-text-primary-dark mt-0.5">
                       {listing.claimedByNgoId?.name || 'Robin Hood Army'}
                     </div>
-                    <div className="text-[11px] text-brand font-mono mt-1">
+                    <div className="text-xs text-brand font-mono mt-1">
                       Status: {listing.status}
                     </div>
                   </div>
 
                   {/* Simulated Replay Rank #1 */}
                   <div className="p-2.5 rounded bg-surface-light dark:bg-surface-dark border border-brand/30">
-                    <span className="text-[10px] font-mono text-brand uppercase font-semibold block">
+                    <span className="text-xs font-mono text-brand uppercase font-semibold block">
                       Simulated Rank #1 with New Weights
                     </span>
                     <div className="font-semibold text-text-primary-light dark:text-text-primary-dark mt-0.5">
                       {simTopNgo ? simTopNgo.ngo?.name : 'Run simulation to inspect'}
                     </div>
                     {simTopNgo && (
-                      <div className="text-[11px] font-mono text-brand mt-1">
+                      <div className="text-xs font-mono text-brand mt-1">
                         Score: {simTopNgo.totalScore} / 100 • Distance: {simTopNgo.distanceKm} km
                       </div>
                     )}
@@ -256,7 +256,7 @@ export const MatchingLab: React.FC = () => {
                 </div>
 
                 {simTopNgo && (
-                  <p className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark leading-snug pt-1">
+                  <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark leading-snug pt-1">
                     {simTopNgo.explanation}
                   </p>
                 )}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { PageHero } from '../../components/PageHero';
 import { useFilters } from '../../context/FilterContext';
 import { apiRequest } from '../../api/client';
 import { StatCard } from '../../components/StatCard';
@@ -55,21 +56,14 @@ export const Overview: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-            Operations & Redistribution Command Center
-          </h1>
-          <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-            Aggregated metrics across 60 hostel messes and 25 partner NGOs with continuous pipeline verification.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <PipelineInspector inspector={kpiInspector} title="Overview Multi-Facet Pipeline" />
-        </div>
-      </div>
+      <PageHero
+        image="/images/admin-thali-spread.webp"
+        imageAlt="A steel thali with dal, sabzi and rice in small bowls"
+        title="How much food is reaching people"
+        description="Waste, donations and pickups across all 60 hostel messes and 25 partner NGOs."
+        focus="center 55%"
+        actions={<PipelineInspector inspector={kpiInspector} title="Overview pipeline" />}
+      />
 
       {/* Primary Big Data Operational KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -103,13 +97,13 @@ export const Overview: React.FC = () => {
       </div>
 
       {/* Social & Environmental Impact Grid (Section 5, Item 14) */}
-      <div className="p-4 rounded-md border border-brand/30 bg-[#DCFCE7]/20 dark:bg-[#14532D]/20 space-y-3">
+      <div className="p-4 rounded-md border border-brand/30 bg-[#E1EFE6]/20 dark:bg-[#1B3A2A]/20 space-y-3">
         <div className="flex items-center justify-between border-b border-brand/20 pb-2">
-          <div className="flex items-center gap-2 text-xs font-semibold text-brand dark:text-[#86EFAC]">
+          <div className="flex items-center gap-2 text-xs font-semibold text-brand dark:text-[#9FD4B2]">
             <Leaf className="w-4 h-4" />
-            <span>COMMUNITY & ENVIRONMENTAL IMPACT AUDIT</span>
+            <span>What the redistributed food is worth</span>
           </div>
-          <span className="text-[11px] font-mono text-text-muted-light dark:text-text-muted-dark">
+          <span className="text-xs font-mono text-text-muted-light dark:text-text-muted-dark">
             Assumptions: {assumptions.kgPerMeal || 0.4} kg/meal • {assumptions.co2eFactorPerKg || 2.5} kg CO2e/kg • ₹{assumptions.costPerKgRs || 60}/kg
           </span>
         </div>
@@ -119,10 +113,10 @@ export const Overview: React.FC = () => {
             <div className="text-xs text-text-muted-light dark:text-text-muted-dark flex items-center gap-1.5">
               <Utensils className="w-3.5 h-3.5 text-brand" /> Nutritional Meals Equivalent
             </div>
-            <div className="text-2xl font-mono font-bold text-text-primary-light dark:text-text-primary-dark mt-1">
+            <div className="figure text-[1.9rem] leading-none text-text-primary-light dark:text-text-primary-dark mt-1">
               {(kpis.beneficiariesServed || 0).toLocaleString()}
             </div>
-            <div className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark mt-1">
+            <div className="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1">
               Based on standardized {assumptions.kgPerMeal || 0.4} kg portion per meal
             </div>
           </div>
@@ -131,10 +125,10 @@ export const Overview: React.FC = () => {
             <div className="text-xs text-text-muted-light dark:text-text-muted-dark flex items-center gap-1.5">
               <Leaf className="w-3.5 h-3.5 text-brand" /> Avoided GHG Emissions (CO2e)
             </div>
-            <div className="text-2xl font-mono font-bold text-brand mt-1">
+            <div className="figure text-[1.9rem] leading-none text-brand mt-1">
               {(kpis.co2eAvoidedKg || 0).toLocaleString()} kg
             </div>
-            <div className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark mt-1">
+            <div className="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1">
               Using 2.5 kg CO2e avoided per kg food diverted from landfill
             </div>
           </div>
@@ -143,10 +137,10 @@ export const Overview: React.FC = () => {
             <div className="text-xs text-text-muted-light dark:text-text-muted-dark flex items-center gap-1.5">
               <IndianRupee className="w-3.5 h-3.5 text-brand" /> Financial Value Recovered
             </div>
-            <div className="text-2xl font-mono font-bold text-text-primary-light dark:text-text-primary-dark mt-1">
+            <div className="figure text-[1.9rem] leading-none text-text-primary-light dark:text-text-primary-dark mt-1">
               ₹{(kpis.costSavedRs || 0).toLocaleString()}
             </div>
-            <div className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark mt-1">
+            <div className="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1">
               Calibrated at ₹60.00 / kg average raw meal replacement cost
             </div>
           </div>
@@ -172,21 +166,21 @@ export const Overview: React.FC = () => {
             <AreaChart data={trendsData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
               <defs>
                 <linearGradient id="donatedGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#D97706" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#D97706" stopOpacity={0.0} />
+                  <stop offset="5%" stopColor="#D99A1E" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#D99A1E" stopOpacity={0.0} />
                 </linearGradient>
                 <linearGradient id="redistGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#166534" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#166534" stopOpacity={0.0} />
+                  <stop offset="5%" stopColor="#1E5B3C" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#1E5B3C" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.4} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#DCE3E0" opacity={0.4} />
               <XAxis dataKey="date" tick={{ fontSize: 10 }} />
               <YAxis unit=" kg" tick={{ fontSize: 10 }} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#18191B',
-                  borderColor: '#27282B',
+                  backgroundColor: '#16201C',
+                  borderColor: '#25332D',
                   borderRadius: '6px',
                   color: '#FFFFFF',
                   fontSize: '12px',
@@ -196,7 +190,7 @@ export const Overview: React.FC = () => {
               <Area
                 type="monotone"
                 dataKey="donatedKg"
-                stroke="#D97706"
+                stroke="#D99A1E"
                 fillOpacity={1}
                 fill="url(#donatedGrad)"
                 name="Gross Surplus Listed (kg)"
@@ -204,7 +198,7 @@ export const Overview: React.FC = () => {
               <Area
                 type="monotone"
                 dataKey="redistributedKg"
-                stroke="#166534"
+                stroke="#1E5B3C"
                 fillOpacity={1}
                 fill="url(#redistGrad)"
                 name="Successfully Picked Up (kg)"

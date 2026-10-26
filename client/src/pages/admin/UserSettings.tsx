@@ -60,16 +60,16 @@ export const UserSettings: React.FC = () => {
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       <div>
-        <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-          Platform Parameters & Data Lifecycle Architecture
+        <h1 className="text-[1.75rem] leading-tight text-text-primary-light dark:text-text-primary-dark">
+          Settings
         </h1>
-        <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-          Configure matching engine weights, environmental conversion constants, and automated database archival.
+        <p className="text-[15px] text-text-secondary-light dark:text-text-secondary-dark mt-1 max-w-2xl">
+          How NGOs are ranked for each listing, the impact conversion factors, and when old records are archived.
         </p>
       </div>
 
       {saveSuccess && (
-        <div className="p-3 rounded bg-[#DCFCE7] dark:bg-[#14532D] border border-[#BBF7D0] text-xs text-[#166534] dark:text-[#86EFAC] flex items-center gap-2">
+        <div className="p-3 rounded bg-[#E1EFE6] dark:bg-[#1B3A2A] border border-[#C6DFCF] text-xs text-[#1E5B3C] dark:text-[#9FD4B2] flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>Global platform configuration updated and synchronized across all active workers.</span>
         </div>
@@ -258,10 +258,10 @@ export const UserSettings: React.FC = () => {
               <Clock className="w-3.5 h-3.5 text-warning" />
               90-Day Raw Audit Log TTL Index
             </div>
-            <p className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
+            <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
               MongoDB TTL monitor automatically sweeps raw audit trails exceeding 90 days (7,776,000 seconds).
             </p>
-            <div className="font-mono text-[11px] pt-1">
+            <div className="font-mono text-xs pt-1">
               Active Audit Logs in Buffer: <strong>{lifecycle?.rawAuditLogsCount || 500}</strong> documents
             </div>
           </div>
@@ -271,10 +271,10 @@ export const UserSettings: React.FC = () => {
               <Archive className="w-3.5 h-3.5 text-brand" />
               Pre-Aggregated Monthly Rollup Collection
             </div>
-            <p className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
+            <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
               Historical records older than {monthsOld} months compress into monthly summary documents in <code className="font-mono bg-surface-light dark:bg-surface-dark px-1 rounded">meal_summaries</code>.
             </p>
-            <div className="font-mono text-[11px] pt-1">
+            <div className="font-mono text-xs pt-1">
               Archived Monthly Summaries: <strong>{lifecycle?.archivedRollupsCount || 0}</strong> rollups
             </div>
           </div>
@@ -286,7 +286,7 @@ export const UserSettings: React.FC = () => {
             <div className="font-medium text-text-primary-light dark:text-text-primary-dark">
               Trigger Cold-Tier Database Archival
             </div>
-            <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark">
+            <p className="text-xs text-text-muted-light dark:text-text-muted-dark">
               Rolls up granular day-level records older than {monthsOld} months into monthly summary vectors.
             </p>
           </div>
@@ -314,11 +314,11 @@ export const UserSettings: React.FC = () => {
         </div>
 
         {archiveResult && (
-          <div className="p-3 rounded bg-[#DCFCE7] dark:bg-[#14532D] border border-[#BBF7D0] text-xs space-y-1">
-            <div className="font-bold text-[#166534] dark:text-[#86EFAC]">
+          <div className="p-3 rounded bg-[#E1EFE6] dark:bg-[#1B3A2A] border border-[#C6DFCF] text-xs space-y-1">
+            <div className="font-bold text-[#1E5B3C] dark:text-[#9FD4B2]">
               {archiveResult.message}
             </div>
-            <div className="font-mono text-[11px] text-[#166534] dark:text-[#86EFAC]">
+            <div className="font-mono text-xs text-[#1E5B3C] dark:text-[#9FD4B2]">
               Storage Saved: ~{archiveResult.data?.storageSavedMb} MB • Created {archiveResult.data?.summaryRollupsCreated} monthly rollups
             </div>
           </div>

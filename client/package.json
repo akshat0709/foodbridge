@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource-variable/anek-latin": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/mukta": "^5.3.0",
     "@tanstack/react-query": "^5.66.0",
     "clsx": "^2.1.1",
     "leaflet": "^1.9.4",
@@ -18,18 +21,7 @@
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.29.0",
     "recharts": "^2.15.1",
-    "tailwind-merge": "^3.0.1",
-    "bcryptjs": "^3.0.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-rate-limit": "^7.5.0",
-    "helmet": "^8.0.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.9.5",
-    "morgan": "^1.10.0",
-    "pdfkit": "^0.16.0",
-    "zod": "^3.24.2"
+    "tailwind-merge": "^3.0.1"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.16",

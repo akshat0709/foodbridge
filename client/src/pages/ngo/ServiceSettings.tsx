@@ -72,16 +72,16 @@ export const ServiceSettings: React.FC = () => {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-          Capacity & Service Area Parameters
+        <h1 className="text-[1.75rem] leading-tight text-text-primary-light dark:text-text-primary-dark">
+          Service area
         </h1>
-        <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-          These constraints directly calibrate the geospatial $geoNear matching engine and capacity weights.
+        <p className="text-[15px] text-text-secondary-light dark:text-text-secondary-dark mt-1 max-w-2xl">
+          How far your team can travel and how much your vehicle carries. Matching uses these to decide what you see.
         </p>
       </div>
 
       {isSaved && (
-        <div className="p-3 rounded-md bg-[#DCFCE7] dark:bg-[#14532D] border border-[#BBF7D0] dark:border-[#166534] text-xs text-[#166534] dark:text-[#86EFAC] flex items-center gap-2">
+        <div className="p-3 rounded-md bg-[#E1EFE6] dark:bg-[#1B3A2A] border border-[#C6DFCF] dark:border-[#1E5B3C] text-xs text-[#1E5B3C] dark:text-[#9FD4B2] flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>Operational settings updated successfully. Dispatch radius updated in MongoDB.</span>
         </div>
@@ -115,7 +115,7 @@ export const ServiceSettings: React.FC = () => {
             onChange={e => setForm({ ...form, serviceRadiusKm: parseInt(e.target.value) })}
             className="w-full h-1.5 bg-border-light dark:bg-border-dark rounded-lg appearance-none cursor-pointer accent-brand"
           />
-          <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark mt-1">
+          <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">
             The platform will only broadcast surplus listings from hostel messes located within {form.serviceRadiusKm} km of your depot.
           </p>
         </div>

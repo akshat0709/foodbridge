@@ -73,12 +73,12 @@ export const ForecastLab: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-            ML Forecast Lab & Model Governance Registry
+          <h1 className="text-[1.75rem] leading-tight text-text-primary-light dark:text-text-primary-dark">
+            Forecast lab
           </h1>
-          <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-            Strict time-based train/test split (80/20 by date, never random) comparing Linear Regression, Random Forest, and Gradient Boosting.
-          </p>
+          <p className="text-[15px] text-text-secondary-light dark:text-text-secondary-dark mt-1 max-w-2xl">
+          Compare the leftover-prediction models on a time-based 80/20 split, check for drift, and retrain.
+        </p>
         </div>
 
         <button
@@ -92,7 +92,7 @@ export const ForecastLab: React.FC = () => {
       </div>
 
       {retrainSuccess && (
-        <div className="p-3 rounded bg-[#DCFCE7] dark:bg-[#14532D] border border-[#BBF7D0] text-xs text-[#166534] dark:text-[#86EFAC] flex items-center gap-2">
+        <div className="p-3 rounded bg-[#E1EFE6] dark:bg-[#1B3A2A] border border-[#C6DFCF] text-xs text-[#1E5B3C] dark:text-[#9FD4B2] flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{retrainSuccess}</span>
         </div>
@@ -102,7 +102,7 @@ export const ForecastLab: React.FC = () => {
       <div
         className={`p-4 rounded-md border text-xs flex items-center justify-between ${
           drift?.driftFlag
-            ? 'bg-[#FEE2E2] dark:bg-[#7F1D1D]/40 border-danger text-danger'
+            ? 'bg-[#F8E3DE] dark:bg-[#4A1F17]/40 border-danger text-danger'
             : 'bg-surface-light dark:bg-surface-dark border-border-light dark:border-border-dark'
         }`}
       >
@@ -116,7 +116,7 @@ export const ForecastLab: React.FC = () => {
             <div className="font-semibold text-text-primary-light dark:text-text-primary-dark">
               Model Health: {drift?.status || 'STABLE'} (Active Model: {metrics?.activeModel || 'GradientBoostingRegressor'})
             </div>
-            <div className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark font-mono">
+            <div className="text-xs text-text-secondary-light dark:text-text-secondary-dark font-mono">
               Current Test MAE: {drift?.currentMae || 1.64} kg | Baseline MAE: {drift?.baselineMae || 1.64} kg |
               Drift Delta: {drift?.driftDelta || 0.0} kg (Threshold: 2.0 kg)
             </div>
@@ -148,7 +148,7 @@ export const ForecastLab: React.FC = () => {
                   {mName}
                 </span>
                 {isActive && (
-                  <span className="text-[10px] font-mono font-bold text-brand px-1.5 py-0.5 rounded bg-brand/10">
+                  <span className="text-xs font-mono font-bold text-brand px-1.5 py-0.5 rounded bg-brand/10">
                     ACTIVE PRODUCTION
                   </span>
                 )}
@@ -156,21 +156,21 @@ export const ForecastLab: React.FC = () => {
 
               <div className="grid grid-cols-3 gap-2 mt-3 text-center font-mono">
                 <div className="p-1.5 rounded bg-bg-light dark:bg-bg-dark border border-border-light dark:border-border-dark">
-                  <div className="text-[10px] text-text-muted-light">MAE</div>
+                  <div className="text-xs text-text-muted-light">MAE</div>
                   <div className="text-sm font-bold text-text-primary-light dark:text-text-primary-dark mt-0.5">
                     {m.mae} kg
                   </div>
                 </div>
 
                 <div className="p-1.5 rounded bg-bg-light dark:bg-bg-dark border border-border-light dark:border-border-dark">
-                  <div className="text-[10px] text-text-muted-light">RMSE</div>
+                  <div className="text-xs text-text-muted-light">RMSE</div>
                   <div className="text-sm font-bold text-text-primary-light dark:text-text-primary-dark mt-0.5">
                     {m.rmse} kg
                   </div>
                 </div>
 
                 <div className="p-1.5 rounded bg-bg-light dark:bg-bg-dark border border-border-light dark:border-border-dark">
-                  <div className="text-[10px] text-text-muted-light">R²</div>
+                  <div className="text-xs text-text-muted-light">R²</div>
                   <div className="text-sm font-bold text-brand mt-0.5">{m.r2}</div>
                 </div>
               </div>
@@ -193,21 +193,21 @@ export const ForecastLab: React.FC = () => {
         <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={metrics?.predictedVsActual || []} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.5} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#DCE3E0" opacity={0.5} />
               <XAxis dataKey="index" tick={{ fontSize: 10 }} />
               <YAxis unit=" kg" tick={{ fontSize: 10 }} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#18191B',
-                  borderColor: '#27282B',
+                  backgroundColor: '#16201C',
+                  borderColor: '#25332D',
                   borderRadius: '6px',
                   color: '#FFFFFF',
                   fontSize: '12px',
                 }}
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-              <Line type="monotone" dataKey="actual" stroke="#166534" strokeWidth={2} name="Actual Surplus (kg)" />
-              <Line type="monotone" dataKey="predicted" stroke="#D97706" strokeWidth={1.5} strokeDasharray="4 4" name="Predicted by GBDT (kg)" />
+              <Line type="monotone" dataKey="actual" stroke="#1E5B3C" strokeWidth={2} name="Actual Surplus (kg)" />
+              <Line type="monotone" dataKey="predicted" stroke="#D99A1E" strokeWidth={1.5} strokeDasharray="4 4" name="Predicted by GBDT (kg)" />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -223,19 +223,19 @@ export const ForecastLab: React.FC = () => {
           <div className="h-60 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={featureImportanceList} layout="vertical" margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.4} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#DCE3E0" opacity={0.4} />
                 <XAxis type="number" tick={{ fontSize: 10 }} domain={[0, 0.5]} />
                 <YAxis dataKey="feature" type="category" tick={{ fontSize: 10 }} width={90} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#18191B',
-                    borderColor: '#27282B',
+                    backgroundColor: '#16201C',
+                    borderColor: '#25332D',
                     borderRadius: '6px',
                     color: '#FFFFFF',
                     fontSize: '12px',
                   }}
                 />
-                <Bar dataKey="importance" fill="#166534" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="importance" fill="#1E5B3C" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -255,19 +255,19 @@ export const ForecastLab: React.FC = () => {
                 }))}
                 margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.4} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#DCE3E0" opacity={0.4} />
                 <XAxis dataKey="idx" hide />
                 <YAxis unit=" kg" tick={{ fontSize: 10 }} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#18191B',
-                    borderColor: '#27282B',
+                    backgroundColor: '#16201C',
+                    borderColor: '#25332D',
                     borderRadius: '6px',
                     color: '#FFFFFF',
                     fontSize: '12px',
                   }}
                 />
-                <Bar dataKey="residual" fill="#D97706" />
+                <Bar dataKey="residual" fill="#D99A1E" />
               </BarChart>
             </ResponsiveContainer>
           </div>

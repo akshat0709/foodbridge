@@ -64,12 +64,12 @@ export const Benchmarks: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-            Big Data Scalability & Benchmark Evaluation Harness
+          <h1 className="text-[1.75rem] leading-tight text-text-primary-light dark:text-text-primary-dark">
+            Query benchmarks
           </h1>
-          <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-            Empirical evidence for course evaluation comparing 8 representative queries: IXSCAN vs COLLSCAN latency and ingestion throughput.
-          </p>
+          <p className="text-[15px] text-text-secondary-light dark:text-text-secondary-dark mt-1 max-w-2xl">
+          How eight representative queries perform with and without indexes, and how fast bulk imports run.
+        </p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -102,7 +102,7 @@ export const Benchmarks: React.FC = () => {
       </div>
 
       {runMessage && (
-        <div className="p-3 rounded bg-[#DCFCE7] dark:bg-[#14532D] border border-[#BBF7D0] text-xs text-[#166534] dark:text-[#86EFAC] flex items-center gap-2">
+        <div className="p-3 rounded bg-[#E1EFE6] dark:bg-[#1B3A2A] border border-[#C6DFCF] text-xs text-[#1E5B3C] dark:text-[#9FD4B2] flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{runMessage}</span>
         </div>
@@ -125,21 +125,21 @@ export const Benchmarks: React.FC = () => {
         <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 25 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.4} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#DCE3E0" opacity={0.4} />
               <XAxis dataKey="query" tick={{ fontSize: 10 }} />
               <YAxis unit=" ms" tick={{ fontSize: 10 }} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#18191B',
-                  borderColor: '#27282B',
+                  backgroundColor: '#16201C',
+                  borderColor: '#25332D',
                   borderRadius: '6px',
                   color: '#FFFFFF',
                   fontSize: '12px',
                 }}
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-              <Bar dataKey="indexedLatencyMs" fill="#166534" radius={[3, 3, 0, 0]} name="Indexed IXSCAN Latency (ms)" />
-              <Bar dataKey="unindexedLatencyMs" fill="#B91C1C" radius={[3, 3, 0, 0]} name="Unindexed COLLSCAN Latency (ms)" />
+              <Bar dataKey="indexedLatencyMs" fill="#1E5B3C" radius={[3, 3, 0, 0]} name="Indexed IXSCAN Latency (ms)" />
+              <Bar dataKey="unindexedLatencyMs" fill="#B4432E" radius={[3, 3, 0, 0]} name="Unindexed COLLSCAN Latency (ms)" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -176,10 +176,10 @@ export const Benchmarks: React.FC = () => {
                       <div className="font-sans font-medium text-text-primary-light dark:text-text-primary-dark">
                         {card.name}
                       </div>
-                      <div className="text-[11px] font-sans text-text-muted-light dark:text-text-muted-dark leading-snug mt-0.5">
+                      <div className="text-xs font-sans text-text-muted-light dark:text-text-muted-dark leading-snug mt-0.5">
                         {card.description}
                       </div>
-                      <div className="text-[10px] text-text-muted-light font-mono mt-1">
+                      <div className="text-xs text-text-muted-light font-mono mt-1">
                         [{card.id}]
                       </div>
                     </td>

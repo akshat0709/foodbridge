@@ -14,7 +14,10 @@ describe('Matching Engine Scoring Function', () => {
   };
 
   it('assigns high score to a close NGO with sufficient vehicle capacity and good reliability', () => {
-    const collectBy = new Date(Date.now() + 180 * 60000); // 3 hours window
+    // Fixed 10:00 reference so the time-of-day reliability factor is deterministic
+    // (the test used to fail when run between 22:00 and 06:00).
+    const reference = new Date(2026, 0, 15, 10, 0, 0);
+    const collectBy = new Date(reference.getTime() + 180 * 60000); // 3 hours window
     const { breakdown, explanation } = calculateScoreBreakdown(
       3.2, // 3.2 km
       20,  // 20 km radius
@@ -22,7 +25,7 @@ describe('Matching Engine Scoring Function', () => {
       45,  // 45 kg quantity
       collectBy,
       baseReliability,
-      new Date()
+      reference
     );
 
     expect(breakdown.distanceScore).toBeGreaterThanOrEqual(80);

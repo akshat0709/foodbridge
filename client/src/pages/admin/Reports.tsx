@@ -22,11 +22,11 @@ export const Reports: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
-        <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-          Automated Monthly Dispatch Reports & Data Export Center
+        <h1 className="text-[1.75rem] leading-tight text-text-primary-light dark:text-text-primary-dark">
+          Monthly reports
         </h1>
-        <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-          Server-side vector PDF report generator formatted with top 3 narrative executive insights and raw data pipelines.
+        <p className="text-[15px] text-text-secondary-light dark:text-text-secondary-dark mt-1 max-w-2xl">
+          Download the monthly PDF summary, or export meal logs and listings as CSV.
         </p>
       </div>
 
@@ -39,7 +39,7 @@ export const Reports: React.FC = () => {
               <h2 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
                 Official Monthly Logistics & Waste Report (PDF)
               </h2>
-              <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark">
+              <p className="text-xs text-text-muted-light dark:text-text-muted-dark">
                 Server-side rendered document with tables, executive insights, and recovery audit.
               </p>
             </div>
@@ -73,7 +73,7 @@ export const Reports: React.FC = () => {
           <div className="flex items-center gap-1.5 font-semibold text-brand text-xs">
             <Sparkles className="w-3.5 h-3.5" /> Auto-Generated Executive Narrative Included in PDF:
           </div>
-          <ol className="list-decimal list-inside space-y-1.5 text-text-secondary-light dark:text-text-secondary-dark text-[11px] leading-relaxed">
+          <ol className="list-decimal list-inside space-y-1.5 text-text-secondary-light dark:text-text-secondary-dark text-xs leading-relaxed">
             <li>
               <strong>76.4% Overall Redistribution Efficiency:</strong> Diverted 10.8 tons of hostel food surplus from landfills directly into regional community kitchens.
             </li>
@@ -102,7 +102,7 @@ export const Reports: React.FC = () => {
               <div className="font-semibold text-text-primary-light dark:text-text-primary-dark">
                 All Meal Production Logs (CSV)
               </div>
-              <div className="text-[11px] text-text-muted-light mt-0.5">
+              <div className="text-xs text-text-muted-light mt-0.5">
                 Attendance, prep kg, consumed kg, leftovers & anomalies.
               </div>
             </div>
@@ -120,7 +120,7 @@ export const Reports: React.FC = () => {
               <div className="font-semibold text-text-primary-light dark:text-text-primary-dark">
                 All Surplus Listings & Dispatches (CSV)
               </div>
-              <div className="text-[11px] text-text-muted-light mt-0.5">
+              <div className="text-xs text-text-muted-light mt-0.5">
                 Lifecycles, weights, claimed NGO partners & collect deadlines.
               </div>
             </div>

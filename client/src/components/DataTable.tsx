@@ -106,7 +106,7 @@ export function DataTable<T extends { _id?: string | number; id?: string | numbe
 
             {showColMenu && (
               <div className="absolute right-0 mt-1 w-44 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded shadow-lg p-2 z-30">
-                <div className="text-[11px] font-semibold text-text-muted-light dark:text-text-muted-dark mb-1 px-1">
+                <div className="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark mb-1 px-1">
                   Toggle Columns
                 </div>
                 {columns.map(col => (
@@ -145,7 +145,7 @@ export function DataTable<T extends { _id?: string | number; id?: string | numbe
       {/* Table Body with Sticky Header */}
       <div className="overflow-x-auto flex-1 max-h-[600px]">
         <table className="w-full text-left text-xs border-collapse">
-          <thead className="sticky top-0 z-10 bg-[#F2F1ED] dark:bg-[#1C1D20] text-text-secondary-light dark:text-text-secondary-dark border-b border-border-light dark:border-border-dark font-medium">
+          <thead className="sticky top-0 z-10 bg-[#EBF0EE] dark:bg-[#1C1D20] text-text-secondary-light dark:text-text-secondary-dark border-b border-border-light dark:border-border-dark font-medium">
             <tr>
               {displayedCols.map(col => (
                 <th

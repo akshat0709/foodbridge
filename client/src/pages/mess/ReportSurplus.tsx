@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { PageHero } from '../../components/PageHero';
 import { useAuth } from '../../context/AuthContext';
 import { apiRequest } from '../../api/client';
 import { Send, MapPin, Calculator, AlertCircle, CheckCircle2, Award } from 'lucide-react';
@@ -74,11 +75,11 @@ export const ReportSurplus: React.FC = () => {
       });
 
       setSuccessMessage(
-        `Surplus listing successfully created! Ranked ${res.matchingScores?.length || 0} nearby NGOs.`
+        `Posted. ${res.matchingScores?.length || 0} nearby NGOs can see it now, closest first.`
       );
       setMatches(res.matchingScores || []);
     } catch (err: any) {
-      setErrorMessage(err.message || 'Failed to submit surplus listing');
+      setErrorMessage(err.message || 'Could not post this food. Check the fields and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -88,24 +89,23 @@ export const ReportSurplus: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-          Report Surplus Food
-        </h1>
-        <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-          Publish immediate batch surplus to the automated geospatial matching engine.
-        </p>
-      </div>
+      <PageHero
+        image="/images/mess-thali-tray.webp"
+        imageAlt="A stainless steel mess tray with sabzi, roti and dal"
+        title="Post surplus food"
+        description="Tell nearby NGOs what is left after this meal. The closest ones with room in their van are matched first."
+        focus="center 60%"
+      />
 
       {successMessage && (
-        <div className="p-3 rounded-md bg-[#DCFCE7] dark:bg-[#14532D] border border-[#BBF7D0] dark:border-[#166534] text-xs text-[#166534] dark:text-[#86EFAC] flex items-center gap-2">
+        <div className="p-3 rounded-md bg-[#E1EFE6] dark:bg-[#1B3A2A] border border-[#C6DFCF] dark:border-[#1E5B3C] text-xs text-[#1E5B3C] dark:text-[#9FD4B2] flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{successMessage}</span>
         </div>
       )}
 
       {errorMessage && (
-        <div className="p-3 rounded-md bg-[#FEE2E2] dark:bg-[#7F1D1D] border border-[#FECACA] dark:border-[#991B1B] text-xs text-[#991B1B] dark:text-[#FCA5A5] flex items-center gap-2">
+        <div className="p-3 rounded-md bg-[#F8E3DE] dark:bg-[#4A1F17] border border-[#EFC5BB] dark:border-[#8E3322] text-xs text-[#8E3322] dark:text-[#F0A895] flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{errorMessage}</span>
         </div>
@@ -120,7 +120,7 @@ export const ReportSurplus: React.FC = () => {
           {/* Mess Selection */}
           <div>
             <label className="block font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">
-              Hostel Mess Facility
+              Mess
             </label>
             <select
               value={selectedMessId}
@@ -135,7 +135,7 @@ export const ReportSurplus: React.FC = () => {
               ))}
             </select>
             {selectedMess && (
-              <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark mt-1 flex items-center gap-1">
+              <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-1 flex items-center gap-1">
                 <MapPin className="w-3 h-3 text-brand" /> {selectedMess.address}
               </p>
             )}
@@ -144,7 +144,7 @@ export const ReportSurplus: React.FC = () => {
           {/* Title */}
           <div>
             <label className="block font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">
-              Listing Description / Menu Items
+              What is left
             </label>
             <input
               type="text"
@@ -175,7 +175,7 @@ export const ReportSurplus: React.FC = () => {
 
             <div>
               <label className="block font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">
-                Meal Session
+                Meal
               </label>
               <select
                 value={form.mealType}
@@ -194,7 +194,7 @@ export const ReportSurplus: React.FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">
-                Net Quantity (kg)
+                Quantity (kg)
               </label>
               <input
                 type="number"
@@ -209,8 +209,8 @@ export const ReportSurplus: React.FC = () => {
 
             <div>
               <label className="block font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1 flex items-center justify-between">
-                <span>Estimated Portions</span>
-                <span className="text-[10px] text-brand flex items-center gap-0.5">
+                <span>Portions (approx.)</span>
+                <span className="text-xs text-brand flex items-center gap-0.5">
                   <Calculator className="w-3 h-3" /> Auto
                 </span>
               </label>
@@ -228,7 +228,7 @@ export const ReportSurplus: React.FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">
-                Prepared At
+                Cooked at
               </label>
               <input
                 type="datetime-local"
@@ -241,7 +241,7 @@ export const ReportSurplus: React.FC = () => {
 
             <div>
               <label className="block font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">
-                Collect-By Deadline
+                Must be collected by
               </label>
               <input
                 type="datetime-local"
@@ -256,7 +256,7 @@ export const ReportSurplus: React.FC = () => {
           {/* Operational Notes */}
           <div>
             <label className="block font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">
-              Dispatch Instructions / Storage Notes
+              Notes for the pickup team
             </label>
             <textarea
               rows={2}
@@ -272,7 +272,7 @@ export const ReportSurplus: React.FC = () => {
             className="w-full py-2.5 px-4 rounded font-medium text-white bg-brand hover:bg-brand-dark transition-colors flex items-center justify-center gap-2 shadow-2xs disabled:opacity-50"
           >
             <Send className="w-4 h-4" />
-            <span>{isSubmitting ? 'Evaluating Candidates...' : 'Publish Surplus to Matching Engine'}</span>
+            <span>{isSubmitting ? 'Posting…' : 'Post to nearby NGOs'}</span>
           </button>
         </form>
 
@@ -287,7 +287,7 @@ export const ReportSurplus: React.FC = () => {
               When published, MongoDB executes a <code className="font-mono bg-bg-light dark:bg-bg-dark px-1 py-0.5 rounded">$geoNear</code> query
               filtering NGOs within their verified service perimeter.
             </p>
-            <div className="space-y-1 font-mono text-[11px] pt-1">
+            <div className="space-y-1 font-mono text-xs pt-1">
               <div className="flex justify-between py-1 border-b border-border-light dark:border-border-dark">
                 <span className="text-text-muted-light dark:text-text-muted-dark">Distance Weight</span>
                 <span>35%</span>
@@ -323,7 +323,7 @@ export const ReportSurplus: React.FC = () => {
                       <span>Rank #{m.rank}</span>
                       <span className="text-brand font-bold">{m.totalScore} / 100</span>
                     </div>
-                    <p className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark mt-1 leading-snug">
+                    <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1 leading-snug">
                       {m.explanation}
                     </p>
                   </div>

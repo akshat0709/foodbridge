@@ -64,25 +64,25 @@ export const WasteForecast: React.FC = () => {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <div>
-        <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-          Predictive Waste Forecast & What-If Simulator
+        <h1 className="text-[1.75rem] leading-tight text-text-primary-light dark:text-text-primary-dark">
+          Waste forecast
         </h1>
-        <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-          Machine learning model trained on historical attendance, seasonal lags, and rolling leftover variance.
+        <p className="text-[15px] text-text-secondary-light dark:text-text-secondary-dark mt-1 max-w-2xl">
+          Estimate tomorrow’s leftovers before you cook, and see how changing quantities would affect them.
         </p>
       </div>
 
       {/* Operator Plain-Language Action Banner */}
       {forecast && (
-        <div className="p-4 rounded-md border border-brand/30 bg-[#DCFCE7]/40 dark:bg-[#14532D]/30 space-y-2">
-          <div className="flex items-center gap-2 text-xs font-semibold text-brand dark:text-[#86EFAC]">
+        <div className="p-4 rounded-md border border-brand/30 bg-[#E1EFE6]/40 dark:bg-[#1B3A2A]/30 space-y-2">
+          <div className="flex items-center gap-2 text-xs font-semibold text-brand dark:text-[#9FD4B2]">
             <Sparkles className="w-4 h-4 shrink-0" />
             <span>OPERATIONAL RECOMMENDATION — {forecast.modelUsed}</span>
           </div>
           <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark leading-relaxed">
             {forecast.recommendationText}
           </p>
-          <div className="text-[11px] font-mono text-text-secondary-light dark:text-text-secondary-dark flex items-center gap-3">
+          <div className="text-xs font-mono text-text-secondary-light dark:text-text-secondary-dark flex items-center gap-3">
             <span>
               Point Estimate: <strong>{forecast.predictedLeftoverKg} kg</strong>
             </span>
@@ -131,7 +131,7 @@ export const WasteForecast: React.FC = () => {
               Interactive Production Adjustment Simulator
             </h2>
           </div>
-          <span className="text-[11px] font-mono text-text-muted-light dark:text-text-muted-dark">
+          <span className="text-xs font-mono text-text-muted-light dark:text-text-muted-dark">
             Live Gradient Boosting Inference
           </span>
         </div>
@@ -155,7 +155,7 @@ export const WasteForecast: React.FC = () => {
                 onChange={e => setAttendance(parseInt(e.target.value))}
                 className="w-full h-1.5 bg-border-light dark:bg-border-dark rounded-lg appearance-none cursor-pointer accent-brand"
               />
-              <div className="flex justify-between text-[10px] font-mono text-text-muted-light dark:text-text-muted-dark mt-1">
+              <div className="flex justify-between text-xs font-mono text-text-muted-light dark:text-text-muted-dark mt-1">
                 <span>200 (Vacation/Weekend)</span>
                 <span>1,200 (Full Capacity)</span>
               </div>
@@ -177,7 +177,7 @@ export const WasteForecast: React.FC = () => {
                 onChange={e => setPreparedKg(parseFloat(e.target.value))}
                 className="w-full h-1.5 bg-border-light dark:bg-border-dark rounded-lg appearance-none cursor-pointer accent-brand"
               />
-              <div className="flex justify-between text-[10px] font-mono text-text-muted-light dark:text-text-muted-dark mt-1">
+              <div className="flex justify-between text-xs font-mono text-text-muted-light dark:text-text-muted-dark mt-1">
                 <span>20 kg (Light session)</span>
                 <span>200 kg (Banquet/Feast)</span>
               </div>
@@ -195,7 +195,7 @@ export const WasteForecast: React.FC = () => {
                   <button
                     key={m}
                     onClick={() => setMealType(m)}
-                    className={`py-1.5 px-2 rounded font-mono text-[11px] font-medium border text-center transition-colors ${
+                    className={`py-1.5 px-2 rounded font-mono text-xs font-medium border text-center transition-colors ${
                       mealType === m
                         ? 'bg-brand text-white border-brand'
                         : 'border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark text-text-secondary-light hover:text-text-primary-light'
@@ -233,19 +233,19 @@ export const WasteForecast: React.FC = () => {
               <div className="font-semibold text-text-primary-light dark:text-text-primary-dark text-xs">
                 Simulator Prediction Output
               </div>
-              <p className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
+              <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
                 {whatIfResult.recommendation}
               </p>
             </div>
             <div className="flex items-center gap-4 shrink-0 font-mono text-right">
               <div>
-                <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark block">Leftover</span>
+                <span className="text-xs text-text-muted-light dark:text-text-muted-dark block">Leftover</span>
                 <span className="text-base font-bold text-text-primary-light dark:text-text-primary-dark">
                   {whatIfResult.predictedLeftoverKg} kg
                 </span>
               </div>
               <div>
-                <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark block">Waste %</span>
+                <span className="text-xs text-text-muted-light dark:text-text-muted-dark block">Waste %</span>
                 <span className="text-base font-bold text-brand">
                   {whatIfResult.wastePercentage}%
                 </span>

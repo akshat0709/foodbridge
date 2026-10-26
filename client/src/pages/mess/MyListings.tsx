@@ -42,7 +42,7 @@ export const MyListings: React.FC = () => {
           <div className="font-medium text-text-primary-light dark:text-text-primary-dark">
             {r.title}
           </div>
-          <div className="text-[11px] text-text-muted-light dark:text-text-muted-dark">
+          <div className="text-xs text-text-muted-light dark:text-text-muted-dark">
             {r.messId?.name || 'Mess Facility'}
           </div>
         </div>
@@ -55,7 +55,7 @@ export const MyListings: React.FC = () => {
       render: r => (
         <div>
           <span className="font-mono font-semibold">{r.quantityKg} kg</span>
-          <span className="block text-[10px] text-text-muted-light dark:text-text-muted-dark">
+          <span className="block text-xs text-text-muted-light dark:text-text-muted-dark">
             ~{r.portionsEstimate} portions
           </span>
         </div>
@@ -67,7 +67,7 @@ export const MyListings: React.FC = () => {
       render: r => (
         <div>
           <span className="font-medium">{r.mealType}</span>
-          <span className="block text-[11px] text-text-muted-light dark:text-text-muted-dark">
+          <span className="block text-xs text-text-muted-light dark:text-text-muted-dark">
             {r.foodCategory?.replace('_', ' ')}
           </span>
         </div>
@@ -86,7 +86,7 @@ export const MyListings: React.FC = () => {
           {r.claimedByNgoId ? (
             <span className="font-medium text-brand">{r.claimedByNgoId.name}</span>
           ) : (
-            <span className="text-text-muted-light dark:text-text-muted-dark font-mono">UNCLAIMED</span>
+            <span className="text-text-muted-light dark:text-text-muted-dark">Not claimed yet</span>
           )}
         </span>
       ),
@@ -98,7 +98,7 @@ export const MyListings: React.FC = () => {
       render: r => (
         <div className="font-mono text-xs">
           <div>{new Date(r.collectBy).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-          <div className="text-[10px] text-text-muted-light dark:text-text-muted-dark">
+          <div className="text-xs text-text-muted-light dark:text-text-muted-dark">
             {new Date(r.collectBy).toLocaleDateString([], { month: 'short', day: 'numeric' })}
           </div>
         </div>
@@ -110,12 +110,12 @@ export const MyListings: React.FC = () => {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-            Surplus Redistribution Listings
+          <h1 className="text-[1.75rem] leading-tight text-text-primary-light dark:text-text-primary-dark">
+            My listings
           </h1>
-          <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-            Operational status of food batches listed for community pickup. Click any row for details.
-          </p>
+          <p className="text-[15px] text-text-secondary-light dark:text-text-secondary-dark mt-1 max-w-2xl">
+          Every batch you have posted and where it is now. Select a row to see its full history.
+        </p>
         </div>
 
         {/* Status Filter Tabs */}
@@ -127,13 +127,13 @@ export const MyListings: React.FC = () => {
                 setStatusFilter(st);
                 setPage(1);
               }}
-              className={`px-2.5 py-1 rounded-xs font-mono text-[11px] transition-colors ${
+              className={`px-3 py-1 rounded-md text-sm transition-colors ${
                 statusFilter === st
                   ? 'bg-brand text-white font-semibold'
                   : 'text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light'
               }`}
             >
-              {st}
+              {({ ALL: 'All', AVAILABLE: 'Available', RESERVED: 'Claimed', COLLECTED: 'Picked up', COMPLETED: 'Delivered', EXPIRED: 'Expired' } as Record<string, string>)[st]}
             </button>
           ))}
         </div>
@@ -173,7 +173,7 @@ export const MyListings: React.FC = () => {
                 <div className="text-lg font-mono font-bold text-text-primary-light dark:text-text-primary-dark">
                   {selectedListing.quantityKg} kg
                 </div>
-                <div className="text-[11px] text-text-muted-light dark:text-text-muted-dark">
+                <div className="text-xs text-text-muted-light dark:text-text-muted-dark">
                   ~{selectedListing.portionsEstimate} estimated portions
                 </div>
               </div>
@@ -221,7 +221,7 @@ export const MyListings: React.FC = () => {
                   <div className="text-text-secondary-light dark:text-text-secondary-dark">
                     Contact: {selectedListing.claimedByNgoId.phone}
                   </div>
-                  <div className="text-text-muted-light dark:text-text-muted-dark font-mono text-[11px]">
+                  <div className="text-text-muted-light dark:text-text-muted-dark font-mono text-xs">
                     Vehicle Capacity: {selectedListing.claimedByNgoId.vehicleCapacityKg || 250} kg |
                     Radius: {selectedListing.claimedByNgoId.serviceRadiusKm || 15} km
                   </div>
@@ -246,7 +246,7 @@ export const MyListings: React.FC = () => {
                         <span className="font-medium">Candidate #{score.rank}</span>
                         <span className="text-brand font-bold">{score.totalScore}/100</span>
                       </div>
-                      <div className="grid grid-cols-4 gap-1 text-[10px] font-mono text-center">
+                      <div className="grid grid-cols-4 gap-1 text-xs font-mono text-center">
                         <div className="p-1 rounded bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark">
                           <div>Dist</div>
                           <div className="font-bold text-text-primary-light dark:text-text-primary-dark">
@@ -272,7 +272,7 @@ export const MyListings: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                      <p className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark leading-snug">
+                      <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark leading-snug">
                         {score.explanation}
                       </p>
                     </div>
@@ -293,7 +293,7 @@ export const MyListings: React.FC = () => {
                     <span className="absolute -left-[19px] top-1 w-2.5 h-2.5 rounded-full bg-brand" />
                     <div className="flex items-center gap-2">
                       <span className="font-mono font-medium">{step.status}</span>
-                      <span className="text-[10px] font-mono text-text-muted-light dark:text-text-muted-dark">
+                      <span className="text-xs font-mono text-text-muted-light dark:text-text-muted-dark">
                         {new Date(step.timestamp).toLocaleTimeString([], {
                           hour: '2-digit',
                           minute: '2-digit',
@@ -301,7 +301,7 @@ export const MyListings: React.FC = () => {
                       </span>
                     </div>
                     {step.note && (
-                      <p className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
+                      <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
                         {step.note}
                       </p>
                     )}
